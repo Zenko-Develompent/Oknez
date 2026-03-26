@@ -1,0 +1,45 @@
+
+.main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+}
+
+.registrationWindow{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title{
+    font-size: var(--heading2);
+}
+.title3{
+    font-size: var(--heading5);
+}
+.hipoinfo{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+}
+
+.image{
+    width: 160px;
+    height: 200px;
+    background-color: red;
+}
+
+.titleChild, .titleParent{
+    font-size: var(--heading5);
+    display: flex;
+    justify-content: center;
+}
+
+.forms{
+    display: flex;
+    flex-direction: column;
+}
