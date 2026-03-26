@@ -9,19 +9,17 @@ class Course(SQLModel, table=True):
     is_published: bool = Field(default=False)
 
 
-class CourseModule(SQLModel, table=True):
+class Topic(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     course_id: int = Field(foreign_key="course.id", index=True)
     title: str
     description: str | None = None
-    order: int = Field(index=True)
-    is_published: bool = Field(default=False)
+    order: int = Field(index=True, default=1)
 
 
-class Lesson(SQLModel, table=True):
+class Task(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    module_id: int = Field(foreign_key="coursemodule.id", index=True)
+    topic_id: int = Field(foreign_key="topic.id", index=True)
     title: str
     description: str | None = None
-    order: int = Field(index=True)
-    is_published: bool = Field(default=False)
+    order: int = Field(index=True, default=1)
