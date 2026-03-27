@@ -9,7 +9,18 @@ from jose import JWTError
 
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, SQLModel, select
-
+from app.models.models import (
+    Achievement,
+    AchievementUser,
+    Course,
+    Module,
+    Task,
+    Topic,
+    User,
+    UserAnswer,
+    UserCourse,
+    UserCourseStatus,
+)
 from app.core.db import get_session
 from app.models.models import Course, UserCourse, UserCourseStatus, TaskType
 from app.core.security import get_current_user_id
