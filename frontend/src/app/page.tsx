@@ -14,21 +14,21 @@ export default function Home() {
             <img src={HipoImg.src} alt="" />
           </div>
           <div className={styles.description}>
-            <h2 className={styles.title}>О платформе</h2>
+            <h2 className={styles.title} id="aboutPlatform">Рћ РїР»Р°С‚С„РѕСЂРјРµ</h2>
             <p className={styles.text}>
               <br />
-              Знакомьтесь, это Бегемоша — самый умный и добрый бегемот в мире
-              программирования!
+              Р—РЅР°РєРѕРјСЊС‚РµСЃСЊ, СЌС‚Рѕ Р‘РµРіРµРјРѕС€Р° вЂ” СЃР°РјС‹Р№ СѓРјРЅС‹Р№ Рё РґРѕР±СЂС‹Р№ Р±РµРіРµРјРѕС‚ РІ РјРёСЂРµ
+              РїСЂРѕРіСЂР°РјРјРёСЂРѕРІР°РЅРёСЏ!
               <br />
-              Он помогает детям делать первые шаги в IT.
+              РћРЅ РїРѕРјРѕРіР°РµС‚ РґРµС‚СЏРј РґРµР»Р°С‚СЊ РїРµСЂРІС‹Рµ С€Р°РіРё РІ IT.
               <br />
-              Вместе с Бегемошей ваш ребенок научится писать настоящий код.
+              Р’РјРµСЃС‚Рµ СЃ Р‘РµРіРµРјРѕС€РµР№ РІР°С€ СЂРµР±РµРЅРѕРє РЅР°СѓС‡РёС‚СЃСЏ РїРёСЃР°С‚СЊ РЅР°СЃС‚РѕСЏС‰РёР№ РєРѕРґ.
               <br />
-              И всё это — в игровой форме, без скучных правил и сложных
-              терминов.
+              Р РІСЃС‘ СЌС‚Рѕ вЂ” РІ РёРіСЂРѕРІРѕР№ С„РѕСЂРјРµ, Р±РµР· СЃРєСѓС‡РЅС‹С… РїСЂР°РІРёР» Рё СЃР»РѕР¶РЅС‹С…
+              С‚РµСЂРјРёРЅРѕРІ.
               <br />
-              Программировать может каждый, особенно с таким другом, как
-              Бегемоша!
+              РџСЂРѕРіСЂР°РјРјРёСЂРѕРІР°С‚СЊ РјРѕР¶РµС‚ РєР°Р¶РґС‹Р№, РѕСЃРѕР±РµРЅРЅРѕ СЃ С‚Р°РєРёРј РґСЂСѓРіРѕРј, РєР°Рє
+              Р‘РµРіРµРјРѕС€Р°!
             </p>
           </div>
         </div>
@@ -36,43 +36,43 @@ export default function Home() {
         <div className={styles.my_filter_wrapper}>
           <div className={styles.my_title_wrapper}>
             <h2 className={styles.my_title_filter} id="myCourses">
-              Мои курсы
+              РњРѕРё РєСѓСЂСЃС‹
             </h2>
           </div>
           <div className={styles.filters}>
-            <Button size="m" variant="filled" color="white" title="Все курсы" />
+            <Button size="m" variant="filled" color="white" title="Р’СЃРµ РєСѓСЂСЃС‹" />
             <Button
               size="m"
               variant="filled"
               color="blue"
-              title="Программирование"
+              title="РџСЂРѕРіСЂР°РјРјРёСЂРѕРІР°РЅРёРµ"
             />
             <Button
               size="m"
               variant="filled"
               color="orange"
-              title="Цифровая грамотность"
+              title="Р¦РёС„СЂРѕРІР°СЏ РіСЂР°РјРѕС‚РЅРѕСЃС‚СЊ"
             />
           </div>
         </div>
 
         <div className={styles.my_card_wrapper}>
           <Card
-            category="Категория"
-            title="Название"
-            description="прогрес бар)"
+            category="РљР°С‚РµРіРѕСЂРёСЏ"
+            title="РќР°Р·РІР°РЅРёРµ"
+            description="РїСЂРѕРіСЂРµСЃ Р±Р°СЂ)"
             color="blue"
           />
           <Card
-            category="Категория"
-            title="Название"
-            description="прогрес бар)"
+            category="РљР°С‚РµРіРѕСЂРёСЏ"
+            title="РќР°Р·РІР°РЅРёРµ"
+            description="РїСЂРѕРіСЂРµСЃ Р±Р°СЂ)"
             color="orange"
           />
           <Card
-            category="Категория"
-            title="Название"
-            description="прогрес бар)"
+            category="РљР°С‚РµРіРѕСЂРёСЏ"
+            title="РќР°Р·РІР°РЅРёРµ"
+            description="РїСЂРѕРіСЂРµСЃ Р±Р°СЂ)"
             color="blue"
           />
         </div>
@@ -80,43 +80,43 @@ export default function Home() {
         <div className={styles.my_filter_wrapper}>
           <div className={styles.my_title_wrapper}>
             <h2 className={styles.my_title_filter} id="allCourses">
-              Все курсы
+              Р’СЃРµ РєСѓСЂСЃС‹
             </h2>
           </div>
           <div className={styles.filters}>
-            <Button size="m" variant="filled" color="white" title="Все курсы" />
+            <Button size="m" variant="filled" color="white" title="Р’СЃРµ РєСѓСЂСЃС‹" />
             <Button
               size="m"
               variant="filled"
               color="blue"
-              title="Программирование"
+              title="РџСЂРѕРіСЂР°РјРјРёСЂРѕРІР°РЅРёРµ"
             />
             <Button
               size="m"
               variant="filled"
               color="orange"
-              title="Цифровая грамотность"
+              title="Р¦РёС„СЂРѕРІР°СЏ РіСЂР°РјРѕС‚РЅРѕСЃС‚СЊ"
             />
           </div>
         </div>
 
         <div className={styles.my_card_wrapper}>
           <Card
-            category="Категория"
-            title="Название"
-            description="прогрес бар)"
+            category="РљР°С‚РµРіРѕСЂРёСЏ"
+            title="РќР°Р·РІР°РЅРёРµ"
+            description="РїСЂРѕРіСЂРµСЃ Р±Р°СЂ)"
             color="orange"
           />
           <Card
-            category="Категория"
-            title="Название"
-            description="прогрес бар)"
+            category="РљР°С‚РµРіРѕСЂРёСЏ"
+            title="РќР°Р·РІР°РЅРёРµ"
+            description="РїСЂРѕРіСЂРµСЃ Р±Р°СЂ)"
             color="blue"
           />
           <Card
-            category="Категория"
-            title="Название"
-            description="прогрес бар)"
+            category="РљР°С‚РµРіРѕСЂРёСЏ"
+            title="РќР°Р·РІР°РЅРёРµ"
+            description="РїСЂРѕРіСЂРµСЃ Р±Р°СЂ)"
             color="blue"
           />
         </div>

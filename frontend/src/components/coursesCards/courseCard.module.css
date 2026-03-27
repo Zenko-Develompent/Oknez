@@ -59,6 +59,10 @@
   flex: 1;
 }
 
+.progress {
+  margin-top: 12px;
+}
+
 .button {
-  margin-top: 8px;
+  margin-top: 12px;
 }

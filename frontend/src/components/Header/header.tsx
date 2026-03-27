@@ -8,37 +8,34 @@ import Link from "next/link";
 export default function Header() {
   return (
     <header className={styles.header}>
-      <Link href="#" className={styles.logo}>
-        <img className={styles.logoImage} src={LogoIcon.src} alt="Р›РѕРіРѕС‚РёРї Р‘РµРіРµРјРѕС€Р°" />
-        Р‘РµРіРµРјРѕС€Р°
+      <Link href="/" className={styles.logo}>
+        <img className={styles.logoImage} src={LogoIcon.src} alt="Логотип Бегемоша" />
+        Бегемоша
       </Link>
+
       <nav className={styles.nav}>
         <ul className={styles.navList}>
           <li>
-            <Link href="#myCourses" className={styles.link}>
-              РњРѕРё РєСѓСЂСЃС‹
+            <Link href="/#myCourses" className={styles.link}>
+              Мои курсы
             </Link>
           </li>
           <li>
-            <Link href="#!" className={styles.link}>
-              Рћ РїР»Р°С‚С„РѕСЂРјРµ
+            <Link href="/#aboutPlatform" className={styles.link}>
+              О платформе
             </Link>
           </li>
           <li>
-            <Link href="#allCourses" className={styles.link}>
-              Р’СЃРµ РєСѓСЂСЃС‹
+            <Link href="/#allCourses" className={styles.link}>
+              Все курсы
             </Link>
           </li>
         </ul>
       </nav>
 
-      <Link href="/account" className={styles.profile} aria-label="Р’РѕР№С‚Рё РІ Р°РєРєР°СѓРЅС‚">
+      <Link href="/account" className={styles.profile} aria-label="Войти в аккаунт">
         <img src={AccountIcon.src} alt="" />
       </Link>
     </header>
   );
 }
-
-// {!isAuth ? <li>
-//           <a href="!#">Рћ РЅР°СЃ</a>
-//         </li>:  }
