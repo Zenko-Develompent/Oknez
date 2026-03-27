@@ -69,9 +69,28 @@ export default function CourseTheoryPage() {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const totalFlowSteps = COURSE_FLOW.length;
+  const currentStep = currentIndex + 1;
   const isLastStep = currentIndex === COURSE_FLOW.length - 1;
 
   const currentItem = useMemo(() => COURSE_FLOW[currentIndex], [currentIndex]);
+  const currentThemeItems = useMemo(
+    () => COURSE_FLOW.filter((item) => item.themeId === currentItem.themeId),
+    [currentItem]
+  );
+  const currentThemeStep = useMemo(() => {
+    const idx = currentThemeItems.findIndex((item) => {
+      if (item.type !== currentItem.type) return false;
+      if (item.type === "theme" && currentItem.type === "theme") {
+        return item.themeId === currentItem.themeId;
+      }
+      if (item.type === "lesson" && currentItem.type === "lesson") {
+        return item.lessonId === currentItem.lessonId;
+      }
+      return false;
+    });
+    return idx === -1 ? 1 : idx + 1;
+  }, [currentItem, currentThemeItems]);
 
   const handleThemeSelect = (themeId: string) => {
     const index = COURSE_FLOW.findIndex(
@@ -104,8 +123,8 @@ export default function CourseTheoryPage() {
       <Header />
       <div className={styles.page}>
         <Sidebar
-          totalSteps={50}
-          completedSteps={5}
+          totalSteps={totalFlowSteps}
+          completedSteps={currentStep}
           isOpen={isSidebarOpen}
           onToggle={() => setIsSidebarOpen((prev) => !prev)}
           courseTitle="Основы цифровой грамотности и безопасного интернета"
@@ -114,6 +133,27 @@ export default function CourseTheoryPage() {
         />
 
         <main className={styles.content}>
+          <div className={styles.stepBanner}>
+            <div className={styles.stepBannerTop}>Шаг {currentThemeStep} из {currentThemeItems.length}</div>
+            <div className={styles.stepBannerBottom}>
+              <div className={styles.stepSegments}>
+                {currentThemeItems.map((item, index) => {
+                  const key =
+                    item.type === "theme"
+                      ? `${item.themeId}-theme`
+                      : `${item.themeId}-${item.lessonId}`;
+                  return (
+                    <span
+                      key={key}
+                      className={`${styles.stepSegment} ${
+                        index + 1 === currentThemeStep ? styles.stepSegmentActive : ""
+                      }`}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
           <h1 className={styles.contentTitle}>{currentItem.title}</h1>
           <p className={styles.contentText}>{currentItem.text}</p>
           <div className={styles.nextButton}>

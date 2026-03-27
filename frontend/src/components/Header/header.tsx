@@ -20,8 +20,8 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link href="#allCourses" className={styles.link}>
-              Каталог
+            <Link href="#!" className={styles.link}>
+              О платформе
             </Link>
           </li>
           <li>
