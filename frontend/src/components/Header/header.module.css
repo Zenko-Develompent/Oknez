@@ -23,6 +23,7 @@
   color: black;
   text-decoration: none;
   transition: color 0.3s ease, transform 0.3s ease;
+	text-transform: uppercase;
 }
 
 .logo:hover {

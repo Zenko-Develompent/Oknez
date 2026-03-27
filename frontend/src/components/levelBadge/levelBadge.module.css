@@ -1,0 +1,26 @@
+.badge {
+  display: flex;
+	text-align: center;
+	flex-direction: row;
+	align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 10px;
+  border-radius: 15px;
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 1;
+	border: none;
+	padding: 5px 10px;
+
+}
+
+.toneBlue {
+  background-color: var(--state-blue-disabled);
+  color: var(--state-blue-active);
+}
+
+.toneOrange {
+  background-color: var(--state-orange-disabled);
+  color: var(--state-orange-active);
+}

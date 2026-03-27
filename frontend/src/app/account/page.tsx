@@ -1,9 +1,15 @@
+"use client";
+
+import Button from "@/components/button/button";
+import AchievementCard from "@/components/achievementCard/achievementCard";
 import Card from "@/components/coursesCards/courseCard";
 import Header from "@/components/header/header";
+import LevelBadge from "@/components/levelBadge/levelBadge";
+import ProgressBar from "@/components/progressBar/progressBar";
 import CoinIcon from "@/shared/assets/icons/coin.svg";
-import HippoBronze from "@/shared/assets/images/hippobad.png";
-import HippoGold from "@/shared/assets/images/hippogood.png";
-import HippoSilver from "@/shared/assets/images/hipochild.png";
+import AchivBronze from "@/shared/assets/images/achivbronze.png";
+import AchivGold from "@/shared/assets/images/achivhold.png";
+import AchivSilver from "@/shared/assets/images/achivsilver.png";
 import styles from "./account.module.css";
 
 interface AchievementItem {
@@ -11,6 +17,7 @@ interface AchievementItem {
   title?: string;
   image: string;
   alt: string;
+  level: number;
 }
 
 interface AccountCourse {
@@ -27,19 +34,23 @@ const achievements: AchievementItem[] = [
   {
     id: "gold",
     title: "«Золотой повелитель»",
-    image: HippoGold.src,
+    image: AchivGold.src,
     alt: "Золотой бегемоша",
+    level: 20,
   },
   {
     id: "silver",
     title: "«Серебряный навигатор»",
-    image: HippoSilver.src,
+    image: AchivSilver.src,
     alt: "Серебряный бегемоша",
+    level: 16,
   },
   {
     id: "bronze",
-    image: HippoBronze.src,
+    title: "«Бронзовый чемпион»",
+    image: AchivBronze.src,
     alt: "Бронзовый бегемоша",
+    level: 12,
   },
 ];
 
@@ -73,6 +84,12 @@ const accountCourses: AccountCourse[] = [
   },
 ];
 
+const coins = 4236;
+const coinsPerLevel = 1000;
+const level = Math.floor(coins / coinsPerLevel) + 1;
+const levelProgress = Math.round(((coins % coinsPerLevel) / coinsPerLevel) * 100);
+const coinsToNextLevel = coinsPerLevel - (coins % coinsPerLevel || coinsPerLevel);
+
 export default function AccountPage() {
   return (
     <div className={styles.page}>
@@ -81,15 +98,30 @@ export default function AccountPage() {
       <main className={styles.content}>
         <section className={styles.profileSection}>
           <h1 className={styles.pageTitle}>Личный кабинет</h1>
+					<div className={styles.profileTopRow}>
+						<p className={styles.coinsRow}>
+							<span className={styles.coinsAmount}>{coins}</span>
+							<img className={styles.coinIcon} src={CoinIcon.src} alt="" aria-hidden="true" />
+						</p>
+          
+            <LevelBadge level={level} tone="orange" className={styles.levelBadge} />
+          </div>
 
-          <p className={styles.coinsRow}>
-            <span className={styles.coinsAmount}>4236</span>
-            <img className={styles.coinIcon} src={CoinIcon.src} alt="" aria-hidden="true" />
-          </p>
+          <ProgressBar
+            value={levelProgress}
+            color="blue"
+            label={`До уровня ${level + 1} осталось ${coinsToNextLevel} койна`}
+            showValue={false}
+            className={styles.coinsProgress}
+          />
 
           <div className={styles.credentials}>
-            <p>Логин: fwejhefijwen</p>
-            <p>Пароль: fwejhefijwen</p>
+            <p>
+              <span className={styles.credentialsLabel}>Логин:</span> fwejhefijwen
+            </p>
+            <p>
+              <span className={styles.credentialsLabel}>Пароль:</span> fwejhefijwen
+            </p>
           </div>
         </section>
 
@@ -98,10 +130,13 @@ export default function AccountPage() {
 
           <div className={styles.achievementsGrid}>
             {achievements.map((achievement) => (
-              <article key={achievement.id} className={styles.achievementItem}>
-                {achievement.title && <p className={styles.achievementLabel}>{achievement.title}</p>}
-                <img src={achievement.image} alt={achievement.alt} className={styles.achievementImage} />
-              </article>
+              <AchievementCard
+                key={achievement.id}
+                title={achievement.title}
+                image={achievement.image}
+                alt={achievement.alt}
+                level={achievement.level}
+              />
             ))}
           </div>
         </section>
@@ -123,6 +158,19 @@ export default function AccountPage() {
             ))}
           </div>
         </section>
+
+        <div className={styles.bottomActions}>
+          <Button
+            title="Выйти из аккаунта"
+            size="m"
+            variant="outline"
+            color="logo"
+            className={styles.logoutButton}
+            onClick={() => {
+              window.location.href = "/login";
+            }}
+          />
+        </div>
       </main>
     </div>
   );
