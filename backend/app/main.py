@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-
+from app.api.routes import task, rating, achievements
 from app.api.routes.courses import router as courses_router
 from app.api.routes.users import router as users_router
 from app.core.db import create_db_and_tables
@@ -18,6 +18,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
+app.include_router(achievements.router)
+app.include_router(rating.router)
+app.include_router(task.router)
 app.include_router(users_router)
 app.include_router(courses_router)
 

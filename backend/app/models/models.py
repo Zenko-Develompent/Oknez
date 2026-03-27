@@ -189,6 +189,12 @@ class Task(SQLModel, table=True):
     topic: "Topic" = Relationship(back_populates="tasks")
 
 
+class AchievementConditionType(str, Enum):
+    TOTAL_XP = "total_xp"
+    COMPLETED_COURSES = "completed_courses"
+    CORRECT_ANSWERS = "correct_answers"
+
+
 class Achievement(SQLModel, table=True):
     __tablename__ = "achievements"
 
@@ -198,6 +204,9 @@ class Achievement(SQLModel, table=True):
     icon_url: Optional[str] = Field(default=None, max_length=500)
     xp_reward: int = Field(default=0, ge=0, nullable=False)
     is_active: bool = Field(default=True, nullable=False)
+
+    condition_type: Optional[AchievementConditionType] = Field(default=None, index=True)
+    condition_value: Optional[int] = Field(default=None, ge=1)
 
     created_at: datetime = Field(default_factory=utc_now, nullable=False)
     updated_at: datetime = Field(default_factory=utc_now, nullable=False)

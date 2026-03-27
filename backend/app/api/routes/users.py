@@ -5,7 +5,8 @@ from app.models.models import Role, User
 from app.services.auth import create_tokens, refresh_user_id
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
-
+from datetime import datetime
+from app.models.models import AchievementUser
 from app.core.db import get_session
 from app.core.security import (
     create_tokens,
@@ -17,6 +18,14 @@ from app.core.security import (
 from app.models.models import User, UserCourse
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+class UserAchievementPublic(SQLModel):
+    id: int
+    title: str
+    description: str | None = None
+    icon_url: str | None = None
+    xp_reward: int
+    received_at: datetime
 
 class CategoryPublic(SQLModel):
     id: int
@@ -206,3 +215,36 @@ def get_roles(session: Session = Depends(get_session)):
     ).all()
 
     return roles
+
+
+@router.get("/me/achievements", response_model=list[UserAchievementPublic])
+def get_my_achievements(
+    user_id: int = Depends(get_current_user_id),
+    session: Session = Depends(get_session),
+):
+    achievement_links = session.exec(
+        select(AchievementUser)
+        .where(AchievementUser.user_id == user_id)
+        .order_by(AchievementUser.created_at.desc())
+    ).all()
+
+    result = []
+
+    for link in achievement_links:
+        achievement = link.achievement
+
+        if not achievement:
+            continue
+
+        result.append(
+            UserAchievementPublic(
+                id=achievement.id,
+                title=achievement.title,
+                description=achievement.description,
+                icon_url=achievement.icon_url,
+                xp_reward=achievement.xp_reward,
+                received_at=link.created_at,
+            )
+        )
+
+    return result
