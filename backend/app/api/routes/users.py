@@ -127,3 +127,5 @@ def get_roles(session: Session = Depends(get_session)):
     ).all()
 
     return roles
+
+

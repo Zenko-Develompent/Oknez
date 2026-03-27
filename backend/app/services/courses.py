@@ -4,9 +4,9 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from typing import TypeVar
 
-from sqlmodel import SQLModel, Session, select
+from sqlmodel import Session, SQLModel, select
 
-from app.models.courses import Course, CourseCategory, Module, Task, TaskType, Topic
+from app.models.models import Course, CourseCategory, Module, Task, TaskType, Topic
 
 
 def utc_now() -> datetime:
@@ -90,7 +90,9 @@ class CoursesService:
             return None
         value = correct_answers.strip()
         if len(value) > 2000:
-            raise ValidationError("Поле correct_answers не должно быть длиннее 2000 символов")
+            raise ValidationError(
+                "Поле correct_answers не должно быть длиннее 2000 символов"
+            )
         return value or None
 
     def _validate_order_index(self, order_index: int) -> int:
@@ -118,7 +120,9 @@ class CoursesService:
     def _get_task(self, task_id: int) -> Task:
         return self._get_or_raise(Task, task_id, "Задача")
 
-    def _ensure_category_title_unique(self, title: str, exclude_id: int | None = None) -> None:
+    def _ensure_category_title_unique(
+        self, title: str, exclude_id: int | None = None
+    ) -> None:
         categories = self.session.exec(select(CourseCategory)).all()
         normalized = title.casefold()
 
@@ -208,12 +212,16 @@ class CoursesService:
         courses = list(self.session.exec(select(Course)).all())
 
         if category_id is not None:
-            courses = [course for course in courses if course.category_id == category_id]
+            courses = [
+                course for course in courses if course.category_id == category_id
+            ]
 
         if is_published is not None:
-            courses = [course for course in courses if course.is_published == is_published]
+            courses = [
+                course for course in courses if course.is_published == is_published
+            ]
 
-        courses.sort(key=lambda item: (-(item.id or 0)))
+        courses.sort(key=lambda item: -(item.id or 0))
         return courses
 
     def update_course(
@@ -310,7 +318,9 @@ class CoursesService:
         )
 
         if is_published is not None:
-            modules = [module for module in modules if module.is_published == is_published]
+            modules = [
+                module for module in modules if module.is_published == is_published
+            ]
 
         modules.sort(key=lambda item: (item.order_index, item.id or 0))
         return modules
@@ -440,9 +450,7 @@ class CoursesService:
     def delete_topic(self, topic_id: int) -> None:
         topic = self._get_topic(topic_id)
 
-        tasks = self.session.exec(
-            select(Task).where(Task.topic_id == topic_id)
-        ).all()
+        tasks = self.session.exec(select(Task).where(Task.topic_id == topic_id)).all()
         if tasks:
             raise ConflictError("Нельзя удалить тему, пока в ней есть задачи")
 
