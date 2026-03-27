@@ -19,7 +19,7 @@ class TaskType(str, Enum):
 class CourseCategory(SQLModel, table=True):
     __tablename__ = "course_categories"
 
-    id: int = Field(primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     title: str = Field(index=True, unique=True, max_length=255)
     created_at: datetime = Field(default_factory=utc_now, nullable=False)
     updated_at: datetime = Field(default_factory=utc_now, nullable=False)
@@ -30,11 +30,11 @@ class CourseCategory(SQLModel, table=True):
 class Course(SQLModel, table=True):
     __tablename__ = "courses"
 
-    id: int = Field(primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     title: str = Field(index=True, max_length=255)
     description: str | None = Field(default=None, max_length=2000)
     is_published: bool = Field(default=False)
-    category_id: int | None = Field(default=None, foreign_key="CourseCategory.id", index=True)
+    category_id: int | None = Field(default=None, foreign_key="course_categories.id", index=True)
     created_at: datetime = Field(default_factory=utc_now, nullable=False)
     updated_at: datetime = Field(default_factory=utc_now, nullable=False)
 
@@ -46,7 +46,7 @@ class Course(SQLModel, table=True):
 class Module(SQLModel, table=True):
     __tablename__ = "modules"
 
-    id: int = Field(primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     course_id: int = Field(foreign_key="courses.id", index=True)
     title: str = Field(max_length=255)
     description: str | None = Field(default=None, max_length=2000)
@@ -61,7 +61,7 @@ class Module(SQLModel, table=True):
 class Topic(SQLModel, table=True):
     __tablename__ = "topics"
 
-    id: int = Field(primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     module_id: int = Field(foreign_key="modules.id", index=True)
     title: str = Field(max_length=255)
     description: str | None = Field(default=None, max_length=2000)
@@ -76,14 +76,14 @@ class Topic(SQLModel, table=True):
 class Task(SQLModel, table=True):
     __tablename__ = "tasks"
 
-    id: int = Field(primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     topic_id: int = Field(foreign_key="topics.id", index=True)
     title: str = Field(max_length=255)
     description: str | None = Field(default=None, max_length=2000)
     task_type: TaskType = Field(index=True)
     order_index: int = Field(default=1, ge=1, index=True)
-    md_path: str = Field(max_length=500)
-    correct_answers: str = Field(default=None, max_length=2000)
+    md_path: str | None = Field(default=None, max_length=500)
+    correct_answers: str | None = Field(default=None, max_length=2000)
     xp_reward: int = Field(default=0, ge=0)
     is_published: bool = Field(default=False)
     created_at: datetime = Field(default_factory=utc_now, nullable=False)
