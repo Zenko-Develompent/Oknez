@@ -4,6 +4,8 @@ from datetime import datetime, timezone
 
 from sqlmodel import Field, Relationship, SQLModel
 
+from app.models.achievements import UserAchievement
+
 
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
@@ -44,10 +46,17 @@ class Profile(SQLModel, table=True):
     __tablename__ = "profiles"
 
     id: int | None = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.id", unique=True, index=True, nullable=False)
+    user_id: int = Field(
+        foreign_key="users.id", unique=True, index=True, nullable=False
+    )
     first_name: str | None = Field(default=None, max_length=100)
     last_name: str | None = Field(default=None, max_length=100)
     info: str | None = Field(default=None, max_length=1000)
     picture_src: str | None = Field(default=None, max_length=500)
 
     user: User = Relationship(back_populates="profile")
+
+
+class UserAuth(SQLModel):
+    username: str
+    password: str
