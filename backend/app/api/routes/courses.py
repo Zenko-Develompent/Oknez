@@ -3,13 +3,12 @@ from __future__ import annotations
 from collections import defaultdict
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlmodel import Field, SQLModel, Session, select
+from sqlmodel import Field, Session, SQLModel, select
 
 from app.core.db import get_session
 from app.models.models import Course, CourseCategory, Module, Task, TaskType, Topic
 
-
-router = APIRouter(prefix="/api", tags=["courses"])
+router = APIRouter(prefix="/courses", tags=["courses"])
 
 
 class CategoryPublicResponse(SQLModel, table=False):
@@ -254,7 +253,9 @@ def get_course(
     session: Session = Depends(get_session),
 ) -> CoursePublicResponse:
     course = _get_published_course_or_404(session, course_id)
-    category = session.get(CourseCategory, course.category_id) if course.category_id else None
+    category = (
+        session.get(CourseCategory, course.category_id) if course.category_id else None
+    )
     return _serialize_course(course, category=category)
 
 
@@ -294,7 +295,9 @@ def get_course_tree(
     session: Session = Depends(get_session),
 ) -> CourseTreePublicResponse:
     course = _get_published_course_or_404(session, course_id)
-    category = session.get(CourseCategory, course.category_id) if course.category_id else None
+    category = (
+        session.get(CourseCategory, course.category_id) if course.category_id else None
+    )
 
     modules = _list_modules(session, course.id)
     module_ids = [module.id for module in modules]
