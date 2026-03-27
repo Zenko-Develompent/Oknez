@@ -5,6 +5,7 @@ from enum import Enum
 
 from sqlmodel import Field, Relationship, SQLModel
 
+
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -26,7 +27,7 @@ class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     first_name: str = Field(max_length=100)
     last_name: str | None = Field(default=None, max_length=100)
-    password_hash: str = Field(max_length=255)
+    password: str = Field(max_length=255)
     level: int = Field(default=1, ge=1)
     total_xp: int = Field(default=0, ge=0)
     role_id: int = Field(foreign_key="roles.id", index=True)
