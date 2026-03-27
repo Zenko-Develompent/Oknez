@@ -52,13 +52,123 @@
   font-size: var(--heading5);
   line-height: 1.4;
   max-width: 760px;
+  white-space: pre-line;
+}
+
+.practiceStack {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.quizBlock {
+  border: 1px solid #000;
+  border-radius: 16px;
+  background: #fff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 980px;
+}
+
+.quizTitle {
+  font-size: var(--heading5);
+  font-weight: 700;
+}
+
+.questionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.questionCard {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.questionMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.questionNumber {
+  font-size: calc(13px + 2 * (100vw - 320px) / 1600);
+  font-weight: 700;
+}
+
+.questionType {
+  border: 1px solid #000;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: calc(11px + 1 * (100vw - 320px) / 1600);
+}
+
+.questionStatus {
+  font-size: calc(13px + 2 * (100vw - 320px) / 1600);
+  font-weight: 700;
+}
+
+.questionStatusCorrect {
+  color: #2d9f54;
+}
+
+.questionStatusIncorrect {
+  color: #d64545;
+}
+
+.questionStatusUnanswered {
+  color: #8f8f8f;
+}
+
+.correctAnswers {
+  font-size: calc(12px + 2 * (100vw - 320px) / 1600);
+}
+
+.questionExplanation {
+  font-size: calc(12px + 2 * (100vw - 320px) / 1600);
+  color: #5a5a5a;
+}
+
+.quizActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.quizSummary {
+  font-size: calc(13px + 2 * (100vw - 320px) / 1600);
+  font-weight: 600;
 }
 
 .compilerBlock {
-  margin-top: 28px;
+  margin-top: 0;
 }
 
 .nextButton {
   margin-top: 28px;
   max-width: 220px;
+}
+
+@media (max-width: 1100px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .content {
+    padding: 24px 16px 28px;
+  }
+
+  .nextButton {
+    max-width: 100%;
+  }
 }
