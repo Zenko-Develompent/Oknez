@@ -61,21 +61,21 @@ export default function Home() {
             category="Категория"
             title="Название"
             description="прогрес бар)"
-            backgroundColor="green"
+            backgroundColor="#51C5F3"
             textColor="white"
           />
           <Card
             category="Категория"
             title="Название"
             description="прогрес бар)"
-            backgroundColor="green"
+            backgroundColor="#F77603"
             textColor="white"
           />
           <Card
             category="Категория"
             title="Название"
             description="прогрес бар)"
-            backgroundColor="green"
+            backgroundColor="#51C5F3"
             textColor="white"
           />
         </div>
@@ -108,21 +108,21 @@ export default function Home() {
             category="Категория"
             title="Название"
             description="прогрес бар)"
-            backgroundColor="blue"
+            backgroundColor="#F77603"
             textColor="white"
           />
           <Card
             category="Категория"
             title="Название"
             description="прогрес бар)"
-            backgroundColor="blue"
+            backgroundColor="#51C5F3"
             textColor="white"
           />
           <Card
             category="Категория"
             title="Название"
             description="прогрес бар)"
-            backgroundColor="blue"
+            backgroundColor="#51C5F3"
             textColor="white"
           />
         </div>
