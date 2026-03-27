@@ -1,16 +1,27 @@
+import { useId } from "react";
+import type { InputHTMLAttributes } from "react";
 import styles from "./input.module.css";
 
-interface InputProps {
-	label: string;
-	placeholder: string;
-	type: string;
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
+  label: string;
+  className?: string;
 }
 
-export default function Input({ label, placeholder, type }: InputProps) {
-	return (
-		<div className={styles.wrapper}>
-			<label htmlFor="login" className={styles.label}> {label} </label>
-			<input id="login" type={type} placeholder={placeholder} className={styles.input}/>
-		</div>
-	);
+export default function Input({
+  label,
+  id,
+  className = "",
+  ...props
+}: InputProps) {
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+
+  return (
+    <div className={`${styles.wrapper} ${className}`.trim()}>
+      <label htmlFor={inputId} className={styles.label}>
+        {label}
+      </label>
+      <input id={inputId} className={styles.input} {...props} />
+    </div>
+  );
 }

@@ -13,6 +13,22 @@ Base starter for:
 docker compose up --build
 ```
 
+## Test data (seed)
+
+Run inside backend container:
+
+```powershell
+docker compose exec backend python -m app.scripts.seed
+```
+
+If you want to clear current data first:
+
+```powershell
+docker compose exec backend python -m app.scripts.seed --reset
+```
+
+The script also auto-fixes legacy `achievements` schema (`condition_type`, `condition_value`) before insert.
+
 ## Endpoints
 
 - API: http://localhost:8000

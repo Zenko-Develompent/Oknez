@@ -158,6 +158,20 @@
   display: block;
 }
 
+.statusText {
+  margin: 4px 0 0;
+  color: #1f1a2b;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.errorText {
+  margin: 4px 0 0;
+  color: #d22020;
+  font-size: 18px;
+  font-weight: 600;
+}
+
 @media (max-width: 760px) {
   .content {
     padding: 88px 16px 24px;

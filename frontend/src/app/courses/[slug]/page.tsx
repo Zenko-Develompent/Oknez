@@ -1,110 +1,135 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Header from "@/components/header/header";
 import HippoBlue from "@/shared/assets/images/hippoblue.png";
 import HippoOrange from "@/shared/assets/images/hippoorange.png";
+import {
+  ApiError,
+  CourseDetailPublic,
+  enrollCourse,
+  getApiErrorMessage,
+  getCourseById,
+} from "@/shared/api/client";
+import { getAccessToken } from "@/shared/auth/tokens";
 import styles from "./coursePage.module.css";
 
-interface CoursePageData {
-  slug: string;
-  category: string;
-  title: string;
-  tone: "blue" | "orange";
-  imageSrc: string;
-  about: string;
-  forWho: string[];
-  program: string[];
-  format: string[];
-  result: string[];
-}
-
-const coursePages: CoursePageData[] = [
-  {
-    slug: "python-researchers",
-    category: "Программирование",
-    title: "Python для исследователей: кодим безопасно",
-    tone: "blue",
-    imageSrc: HippoBlue.src,
-    about:
-      "Исследовательский код редко пишут с нуля — чаще дорабатывают и передают коллегам.\n" +
-      "Этот курс показывает, как писать понятный и устойчивый Python-код для научных задач.",
-    forWho: [
-      "Исследователи и школьники, которые хотят писать код аккуратно и понятно.",
-      "Начинающие аналитики, работающие с экспериментальными данными.",
-      "Ребята, которые хотят изучать Python в практическом формате.",
-    ],
-    program: [
-      "Переменные, типы данных и чистый вывод результата.",
-      "Проверка ввода, обработка ошибок и безопасные вычисления.",
-      "Циклы, функции и структура кода без хаоса.",
-      "Финальная практика с мини-проектом и разбором решений.",
-    ],
-    format: [
-      "8 недель, онлайн.",
-      "Короткие уроки и игровые задания.",
-      "Практика в Python-компиляторе после каждой темы.",
-    ],
-    result: [
-      "Уверенно используешь базовые конструкции Python.",
-      "Пишешь код, который легко читать и проверять.",
-      "Можешь собрать собственный небольшой проект.",
-    ],
-  },
-  {
-    slug: "digital-literacy",
-    category: "Цифровая грамотность",
-    title: "Цифровая грамотность для школьников",
-    tone: "orange",
-    imageSrc: HippoOrange.src,
-    about:
-      "Курс помогает уверенно ориентироваться в цифровой среде.\n" +
-      "Разберем безопасность, личные данные, полезные онлайн-инструменты и культуру общения.",
-    forWho: [
-      "Школьники, которые активно пользуются интернетом.",
-      "Ребята, которым важна цифровая безопасность.",
-      "Все, кто хочет лучше понимать цифровые сервисы и риски.",
-    ],
-    program: [
-      "Безопасные пароли, фишинг и приватность.",
-      "Ответственное общение в сети и цифровой этикет.",
-      "Проверка информации и борьба с фейками.",
-      "Практические кейсы и итоговый мини-проект.",
-    ],
-    format: [
-      "8 недель, онлайн.",
-      "Разбор жизненных ситуаций и интерактивные задания.",
-      "Мини-тесты и игровые активности после уроков.",
-    ],
-    result: [
-      "Понимаешь базовые правила цифровой безопасности.",
-      "Умеешь распознавать риски и защищать данные.",
-      "Осознанно и уверенно пользуешься онлайн-сервисами.",
-    ],
-  },
-];
-
-function getCoursePageBySlug(slug: string): CoursePageData | undefined {
-  return coursePages.find((course) => course.slug === slug);
-}
-
-interface CoursePageProps {
-  params: Promise<{ slug: string }>;
-}
-
-export default async function CoursePage({ params }: CoursePageProps) {
-  const { slug } = await params;
-  const course = getCoursePageBySlug(slug);
-
-  if (!course) {
-    notFound();
+function getToneByCategory(categoryTitle?: string): "blue" | "orange" {
+  if (!categoryTitle) {
+    return "blue";
   }
 
-  const heroClass = `${styles.hero} ${
-    course.tone === "blue" ? styles.heroBlue : styles.heroOrange
-  }`.trim();
-  const ctaClass = `${styles.ctaButton} ${
-    course.tone === "blue" ? styles.ctaBlue : styles.ctaOrange
-  }`.trim();
+  const normalized = categoryTitle.toLowerCase();
+
+  if (normalized.includes("цифр") || normalized.includes("digital")) {
+    return "orange";
+  }
+
+  return "blue";
+}
+
+export default function CoursePage() {
+  const router = useRouter();
+  const params = useParams<{ slug: string }>();
+  const [course, setCourse] = useState<CourseDetailPublic | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
+
+  const courseId = useMemo(() => {
+    const parsedValue = Number(params?.slug ?? "");
+
+    if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
+      return null;
+    }
+
+    return parsedValue;
+  }, [params?.slug]);
+
+  useEffect(() => {
+    if (!courseId) {
+      setErrorMessage("Некорректный идентификатор курса.");
+      setIsLoading(false);
+      return;
+    }
+
+    const accessToken = getAccessToken();
+
+    if (!accessToken) {
+      router.replace("/login");
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadCourse = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getCourseById(courseId);
+
+        if (cancelled) {
+          return;
+        }
+
+        setCourse(response);
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+
+        if (error instanceof ApiError && error.status === 401) {
+          router.replace("/login");
+          return;
+        }
+
+        setErrorMessage(getApiErrorMessage(error, "Не удалось загрузить курс."));
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadCourse();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [courseId, router]);
+
+  const tone = getToneByCategory(course?.category?.title ?? "");
+  const heroClass = `${styles.hero} ${tone === "blue" ? styles.heroBlue : styles.heroOrange}`.trim();
+  const ctaClass = `${styles.ctaButton} ${tone === "blue" ? styles.ctaBlue : styles.ctaOrange}`.trim();
+
+  const handleEnroll = async () => {
+    if (!courseId) {
+      return;
+    }
+
+    setErrorMessage("");
+    setStatusMessage("");
+
+    try {
+      setIsEnrolling(true);
+      const response = await enrollCourse(courseId);
+      setStatusMessage(response.message);
+      router.push(`/courseTheory?courseId=${courseId}`);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        router.replace("/login");
+        return;
+      }
+
+      setErrorMessage(
+        getApiErrorMessage(error, "Не удалось записаться на курс.")
+      );
+    } finally {
+      setIsEnrolling(false);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -112,71 +137,50 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
       <section className={heroClass}>
         <div className={styles.heroText}>
-          <span className={styles.categoryPill}>{course.category}</span>
-          <h1 className={styles.title}>{course.title}</h1>
+          <span className={styles.categoryPill}>{course?.category?.title ?? "Курс"}</span>
+          <h1 className={styles.title}>
+            {course?.title ?? "Загрузка курса..."}
+          </h1>
           <div className={styles.heroCtaWrap}>
-            <Link href="/courseTheory" className={ctaClass}>
-              Поступить на курс!
-            </Link>
+            <button type="button" className={ctaClass} onClick={handleEnroll} disabled={isEnrolling || !courseId}>
+              {isEnrolling ? "Записываем..." : "Поступить на курс!"}
+            </button>
           </div>
         </div>
 
-        <img className={styles.heroImage} src={course.imageSrc} alt={course.title} />
+        <img
+          className={styles.heroImage}
+          src={tone === "blue" ? HippoBlue.src : HippoOrange.src}
+          alt={course?.title ?? "Курс"}
+        />
       </section>
 
       <main className={styles.content}>
+        {isLoading && <p className={styles.loadingText}>Загружаем информацию о курсе...</p>}
+        {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
+        {statusMessage && <p className={styles.successText}>{statusMessage}</p>}
+
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>О курсе</h2>
-          <p className={styles.paragraph}>{course.about}</p>
+          <p className={styles.paragraph}>
+            {course?.description?.trim()
+              ? course.description
+              : "Описание курса пока не добавлено."}
+          </p>
         </section>
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Для кого</h2>
-          <ul className={styles.list}>
-            {course.forWho.map((item) => (
-              <li className={styles.listItem} key={item}>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Программа</h2>
-          <ul className={styles.list}>
-            {course.program.map((item) => (
-              <li className={styles.listItem} key={item}>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Формат</h2>
-          <ul className={styles.list}>
-            {course.format.map((item) => (
-              <li className={styles.listItem} key={item}>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Результат</h2>
-          <ul className={styles.list}>
-            {course.result.map((item) => (
-              <li className={styles.listItem} key={item}>
-                {item}
-              </li>
-            ))}
-          </ul>
+          <h2 className={styles.sectionTitle}>Текущий прогресс</h2>
+          <p className={styles.paragraph}>
+            {course?.progress_percent !== null && course?.progress_percent !== undefined
+              ? `${Math.round(course.progress_percent)}%`
+              : "Вы еще не начали этот курс."}
+          </p>
         </section>
 
         <div className={styles.bottomCta}>
-          <Link href="/courseTheory" className={ctaClass}>
-            Поступить на курс!
+          <Link href="/" className={ctaClass}>
+            Вернуться в каталог
           </Link>
         </div>
       </main>

@@ -87,6 +87,13 @@
 	font-weight: 600;
 }
 
+.errorText {
+  margin: -4px 0 0;
+  color: #d22020;
+  font-size: 15px;
+  font-weight: 600;
+}
+
 .registerLink {
 	margin-left: 5px;
 	color: var(--color-logo-default);

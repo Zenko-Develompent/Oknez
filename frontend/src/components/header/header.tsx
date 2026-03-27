@@ -2,18 +2,73 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import styles from "./header.module.css";
 import AccountIcon from "@/shared/assets/icons/account_circle.svg";
 import CoinIcon from "@/shared/assets/icons/coin.svg";
 import LogoIcon from "@/shared/assets/icons/logo.svg";
+import { ApiError, getMyProfile } from "@/shared/api/client";
+import { clearTokens, getAccessToken } from "@/shared/auth/tokens";
 
-const coins = 4236;
-const nickname = "Ник";
-const email = "pochta@mail.ru";
+interface HeaderProfile {
+  firstName: string;
+  lastName: string | null;
+  mail: string;
+  totalXp: number;
+}
 
 export default function Header() {
+  const router = useRouter();
   const [isCabinetOpen, setIsCabinetOpen] = useState(false);
+  const [profile, setProfile] = useState<HeaderProfile | null>(null);
+  const [hasSession, setHasSession] = useState(false);
   const profileWrapRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const token = getAccessToken();
+    setHasSession(Boolean(token));
+
+    if (!token) {
+      setProfile(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadProfile = async () => {
+      try {
+        const response = await getMyProfile();
+
+        if (cancelled) {
+          return;
+        }
+
+        setProfile({
+          firstName: response.first_name,
+          lastName: response.last_name,
+          mail: response.mail,
+          totalXp: response.total_xp,
+        });
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          clearTokens();
+          if (!cancelled) {
+            setHasSession(false);
+          }
+        }
+
+        if (!cancelled) {
+          setProfile(null);
+        }
+      }
+    };
+
+    void loadProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -39,6 +94,22 @@ export default function Header() {
       window.removeEventListener("keydown", handleEscape);
     };
   }, []);
+
+  const nickname = profile
+    ? `${profile.firstName}${profile.lastName ? ` ${profile.lastName}` : ""}`
+    : "Гость";
+  const email = profile?.mail ?? "Войдите в аккаунт";
+  const coins = profile?.totalXp ?? 0;
+  const cabinetLink = hasSession ? "/account" : "/login";
+  const cabinetLinkTitle = hasSession ? "Открыть кабинет" : "Войти";
+
+  const handleLogout = () => {
+    clearTokens();
+    setHasSession(false);
+    setProfile(null);
+    setIsCabinetOpen(false);
+    router.push("/login");
+  };
 
   return (
     <header className={styles.header}>
@@ -95,11 +166,19 @@ export default function Header() {
 
             <p className={styles.popupNick}>{nickname}</p>
             <p className={styles.popupEmail}>{email}</p>
-            <p className={styles.popupTitle}>Личный кабинет</p>
+            <p className={styles.popupTitle}>
+              {hasSession ? "Личный кабинет" : "Гостевой режим"}
+            </p>
 
-            <Link href="/account" className={styles.popupButton} onClick={() => setIsCabinetOpen(false)}>
-              Открыть кабинет
+            <Link href={cabinetLink} className={styles.popupButton} onClick={() => setIsCabinetOpen(false)}>
+              {cabinetLinkTitle}
             </Link>
+
+            {hasSession && (
+              <button type="button" className={styles.popupLogout} onClick={handleLogout}>
+                Выйти
+              </button>
+            )}
           </div>
         )}
       </div>

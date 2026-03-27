@@ -78,6 +78,32 @@
   color: var(--text-color2);
 }
 
+.errorText {
+  width: 100%;
+  margin: -6px 0 0;
+  color: #d22020;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hadAccount {
+  width: 100%;
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.loginLink {
+  color: var(--color-logo-default);
+  text-decoration: none;
+}
+
+.loginLink:hover {
+  color: var(--color-logo-hoover);
+  text-decoration: underline;
+}
+
 @media (max-width: 760px) {
   .registrationWindow {
     padding: 32px 18px;

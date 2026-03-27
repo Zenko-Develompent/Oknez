@@ -133,6 +133,20 @@
   filter: grayscale(100%);
 }
 
+.statusText {
+  margin: 0;
+  color: #1f1a2b;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.errorText {
+  margin: 0;
+  color: #d22020;
+  font-size: 18px;
+  font-weight: 600;
+}
+
 .bottomActions {
   display: flex;
   justify-content: flex-end;

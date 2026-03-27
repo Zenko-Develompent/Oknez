@@ -54,11 +54,20 @@
   justify-content: center;
   padding: 8px 18px;
   border-radius: 999px;
+  border: none;
+  cursor: pointer;
   text-decoration: none;
   color: #1c1523;
   font-size: clamp(15px, 1.6vw, 20px);
   font-weight: 600;
   transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ctaButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .ctaBlue {
@@ -127,6 +136,27 @@
 
 .bottomCta {
   margin-top: 18px;
+}
+
+.loadingText {
+  margin: 0;
+  color: #1f1a2b;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.errorText {
+  margin: 0;
+  color: #d22020;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.successText {
+  margin: 0;
+  color: #127b39;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 @media (max-width: 840px) {

@@ -1,32 +1,62 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Header from "@/components/header/header";
 import LevelBadge from "@/components/levelBadge/levelBadge";
 import CoinIcon from "@/shared/assets/icons/coin.svg";
+import { getApiErrorMessage, getMyProfile, getRatingTop, RatingUserPublic } from "@/shared/api/client";
+import { getAccessToken } from "@/shared/auth/tokens";
 import styles from "./rating.module.css";
 
-interface StudentRatingItem {
-  id: string;
-  name: string;
-  coins: number;
-  level: number;
-}
-
-const topStudents: StudentRatingItem[] = [
-  { id: "1", name: "Алина Смирнова", coins: 8920, level: 9 },
-  { id: "2", name: "Тимур Ахметов", coins: 8410, level: 9 },
-  { id: "3", name: "Мария Петрова", coins: 8035, level: 8 },
-  { id: "4", name: "Арсен Иманов", coins: 7640, level: 8 },
-  { id: "5", name: "София Ким", coins: 7280, level: 8 },
-  { id: "6", name: "Данил Волков", coins: 7015, level: 7 },
-  { id: "me", name: "Ник", coins: 6920, level: 7 },
-  { id: "8", name: "Ева Соколова", coins: 6880, level: 7 },
-  { id: "9", name: "Роман Беляев", coins: 6645, level: 7 },
-  { id: "10", name: "Омар Ибрагимов", coins: 6405, level: 7 },
-];
-
 export default function RatingPage() {
-  const topTenStudents = topStudents.slice(0, 10);
-  const currentUserId = "me";
-  const currentUserPosition = topTenStudents.findIndex((student) => student.id === currentUserId) + 1;
+  const [topStudents, setTopStudents] = useState<RatingUserPublic[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const accessToken = getAccessToken();
+
+        const [rating, profile] = await Promise.all([
+          getRatingTop(10),
+          accessToken ? getMyProfile().catch(() => null) : Promise.resolve(null),
+        ]);
+
+        if (cancelled) {
+          return;
+        }
+
+        setTopStudents(rating);
+        setCurrentUserId(profile?.id ?? null);
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+
+        setErrorMessage(getApiErrorMessage(error, "Не удалось загрузить рейтинг."));
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const currentUserPosition =
+    currentUserId === null
+      ? -1
+      : topStudents.findIndex((student) => student.user_id === currentUserId) + 1;
 
   const getWinnerClass = (index: number): string => {
     if (index === 0) return styles.winnerGold;
@@ -41,29 +71,49 @@ export default function RatingPage() {
 
       <main className={styles.content}>
         <h1 className={styles.title}>Топ учеников</h1>
-        <p className={styles.subtitle}>Рейтинг обновляется по количеству заработанных койнов.</p>
+        <p className={styles.subtitle}>
+          Рейтинг обновляется по количеству заработанных XP.
+        </p>
         <p className={styles.userPosition}>
           Твоя позиция:{" "}
           <strong className={styles.userPositionValue}>
-            {currentUserPosition > 0 ? `${currentUserPosition} место` : "вне топ-10"}
+            {currentUserPosition > 0
+              ? `${currentUserPosition} место`
+              : currentUserId
+                ? "вне топ-10"
+                : "не определена"}
           </strong>
         </p>
 
+        {isLoading && <p className={styles.statusText}>Загружаем рейтинг...</p>}
+        {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
+
         <ol className={styles.list}>
-          {topTenStudents.map((student, index) => (
+          {topStudents.map((student, index) => (
             <li
-              key={student.id}
-              className={`${styles.row} ${getWinnerClass(index)} ${student.id === currentUserId ? styles.rowCurrentUser : ""}`.trim()}
+              key={student.user_id}
+              className={`${styles.row} ${getWinnerClass(index)} ${
+                student.user_id === currentUserId ? styles.rowCurrentUser : ""
+              }`.trim()}
             >
-              <span className={`${styles.place} ${getWinnerClass(index)}`.trim()}>{index + 1}</span>
+              <span className={`${styles.place} ${getWinnerClass(index)}`.trim()}>
+                {index + 1}
+              </span>
 
               <div className={styles.studentInfo}>
-                <p className={styles.studentName}>{student.name}</p>
-                <LevelBadge level={student.level} tone="orange" className={styles.studentLevelBadge} />
+                <p className={styles.studentName}>
+                  {student.first_name}
+                  {student.last_name ? ` ${student.last_name}` : ""}
+                </p>
+                <LevelBadge
+                  level={student.level}
+                  tone="orange"
+                  className={styles.studentLevelBadge}
+                />
               </div>
 
               <p className={styles.coins}>
-                <span>{student.coins}</span>
+                <span>{student.total_xp}</span>
                 <img src={CoinIcon.src} alt="" aria-hidden="true" />
               </p>
             </li>

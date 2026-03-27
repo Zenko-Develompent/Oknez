@@ -10,6 +10,18 @@
   justify-content: center;
   flex: 1;
 }
+
+.imageHipo {
+  width: 100%;
+  max-width: 420px;
+}
+
+.imageHipo img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
 .description{
   display: flex;
   flex-direction: column;
@@ -55,6 +67,12 @@
   justify-content: space-between;
   padding: 75px 7px;
 }
+
+.my_title_wrapper {
+  display: flex;
+  align-items: center;
+}
+
 .my_filters{
   gap: 25px;
   display: flex;
@@ -69,4 +87,18 @@
   gap: 24px;
   flex-wrap: wrap;
   width: 100%;
+}
+
+.statusText {
+  margin: 0;
+  color: #1f1a2b;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.errorText {
+  margin: 0;
+  color: #d22020;
+  font-size: 18px;
+  font-weight: 600;
 }
