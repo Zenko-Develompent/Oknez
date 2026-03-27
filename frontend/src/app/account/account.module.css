@@ -1,0 +1,136 @@
+.page {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 92px 20px 32px;
+}
+
+.profileSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pageTitle {
+  color: #16141a;
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.coinsRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #1a171d;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+  margin: 0;
+}
+
+.coinsAmount {
+  line-height: 1;
+}
+
+.coinIcon {
+  width: 18px;
+  height: 14px;
+  display: block;
+}
+
+.credentials {
+  color: #1e1b23;
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  color: #19171d;
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.achievementsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.achievementItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.achievementLabel {
+  width: 100%;
+  color: #1b181f;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 6px;
+  text-align: left;
+}
+
+.achievementImage {
+  width: 100%;
+  max-width: 210px;
+  height: auto;
+  object-fit: contain;
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+@media (max-width: 920px) {
+  .content {
+    padding: 92px 16px 24px;
+    gap: 28px;
+  }
+
+  .credentials {
+    font-size: 20px;
+  }
+
+  .achievementLabel {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .achievementsGrid,
+  .coursesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .achievementLabel {
+    text-align: center;
+  }
+
+  .achievementImage {
+    max-width: 240px;
+  }
+}

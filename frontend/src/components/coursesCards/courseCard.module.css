@@ -1,69 +1,68 @@
 .card {
-  background: white;
+  background: #fff;
   border-radius: 16px;
   padding: 16px 20px;
-  border: 1px solid black;
+  border: 2px solid;
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  gap: 0px;
+  justify-content: flex-start;
+  gap: 0;
   max-width: 550px;
   width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  height: 100%; 
+  height: 100%;
   min-height: 350px;
 }
 
-/* Категория */
+.cardBlue {
+  border-color: #51c5f3;
+}
+
+.cardOrange {
+  border-color: #f77603;
+}
+
 .category {
   font-size: calc(12px + 4 * (100vw - 320px) / 1600);
   font-weight: 500;
-  color: #ffffff;
+  color: #000;
   letter-spacing: 0.5px;
-  background: black;
   display: inline-block;
-  padding: 6px 15px;
+  padding: 7px 10px;
   border-radius: 16px;
   width: fit-content;
 }
 
-/* Заголовок */
+.categoryBlue {
+  background: #51c5f3;
+}
+
+.categoryOrange {
+  background: #f77603;
+}
+
 .title {
-  padding: 15px 0px;
+  padding: 15px 0;
   font-size: calc(16px + 4 * (100vw - 320px) / 1600);
   font-weight: 600;
-  color: textColor;
+  color: #000;
   margin: 0;
   line-height: 1.3;
 }
 
-/* Описание */
 .description {
   font-size: calc(12px + 4 * (100vw - 320px) / 1600);
-  font-weight: normal;
-  color: textColor;
+  font-weight: 400;
+  color: #000;
   line-height: 1.3;
   margin: 0;
   overflow: hidden;
   flex: 1;
-  color: textColor;
 }
 
-/* Кнопка */
+.progress {
+  margin-top: 12px;
+}
+
 .button {
-  color: #000;
-  font-size: calc(16px + 4 * (100vw - 320px) / 1600);
-  font-weight: 500;
-  padding: 8px 0;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 16px;
-  border: solid 1px black;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-	background-color: white;
+  margin-top: 12px;
 }
