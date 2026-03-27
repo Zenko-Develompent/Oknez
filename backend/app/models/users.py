@@ -1,17 +1,25 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from sqlmodel import Field, Relationship, SQLModel
+
+
+def utc_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
 
     id: int | None = Field(default=None, primary_key=True)
-    username: str = Field(index=True, unique=True, max_length=100)
-    email: str = Field(index=True, unique=True, max_length=255)
-    password: str = Field(max_length=255)
-    role_id: int = Field(foreign_key="roles.id", index=True)
+    username: str = Field(index=True, unique=True, max_length=100, nullable=False)
+    email: str = Field(index=True, unique=True, max_length=255, nullable=False)
+    password: str = Field(max_length=255, nullable=False)
+    role_id: int = Field(foreign_key="roles.id", index=True, nullable=False)
     parent_id: int | None = Field(default=None, foreign_key="users.id", index=True)
+    created_at: datetime = Field(default_factory=utc_now, nullable=False)
+    updated_at: datetime = Field(default_factory=utc_now, nullable=False)
 
     role: "Role" = Relationship(back_populates="users")
     parent: "User | None" = Relationship(
@@ -27,7 +35,7 @@ class Role(SQLModel, table=True):
     __tablename__ = "roles"
 
     id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(index=True, unique=True, max_length=100)
+    name: str = Field(index=True, unique=True, max_length=100, nullable=False)
 
     users: list[User] = Relationship(back_populates="role")
 
@@ -36,7 +44,7 @@ class Profile(SQLModel, table=True):
     __tablename__ = "profiles"
 
     id: int | None = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.id", unique=True, index=True)
+    user_id: int = Field(foreign_key="users.id", unique=True, index=True, nullable=False)
     first_name: str | None = Field(default=None, max_length=100)
     last_name: str | None = Field(default=None, max_length=100)
     info: str | None = Field(default=None, max_length=1000)
