@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from sqlmodel import Field, Relationship, SQLModel
 
-from app.models.users import User
+from app.models import AchievementUser
 
 
 def utc_now() -> datetime:
@@ -25,4 +25,3 @@ class Achievement(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=utc_now, nullable=False)
 
     user_links: list["AchievementUser"] = Relationship(back_populates="achievement")
-

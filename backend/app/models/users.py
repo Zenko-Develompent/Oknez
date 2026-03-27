@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from enum import Enum
 
 from sqlmodel import Field, Relationship, SQLModel
 
-from app.models.achievements import UserAchievement
+from app.models import Achievement, Course, Task
 
 
 def utc_now() -> datetime:
@@ -12,14 +13,14 @@ def utc_now() -> datetime:
 
 
 class Role(SQLModel, table=True):
-    __tablename__ = "roles" 
+    __tablename__ = "roles"
 
     id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(max_length=100, unique=True, index=True) 
-    users: list["User"] = Relationship(back_populates="role") 
+    name: str = Field(max_length=100, unique=True, index=True)
+    users: list["User"] = Relationship(back_populates="role")
 
-    created_at: datetime = Field(default_factory=utc_now, nullable=False) 
-    updated_at: datetime = Field(default_factory=utc_now, nullable=False) 
+    created_at: datetime = Field(default_factory=utc_now, nullable=False)
+    updated_at: datetime = Field(default_factory=utc_now, nullable=False)
 
 
 class User(SQLModel, table=True):
@@ -39,63 +40,61 @@ class User(SQLModel, table=True):
     user_answers: list["UserAnswer"] = Relationship(back_populates="user")
     achievement_links: list["AchievementUser"] = Relationship(back_populates="user")
 
-    created_at: datetime = Field(default_factory=utc_now, nullable=False) 
-    updated_at: datetime = Field(default_factory=utc_now, nullable=False) 
-
-
-
-class UserAnswer(SQLModel, table=True): 
-    __tablename__ = "user_answers" 
-
-    id: int | None = Field(default=None, primary_key=True) 
-    task_id: int = Field(foreign_key="tasks.id", index=True) 
-    answer_body: str 
-    user_id: int = Field(foreign_key="users.id", index=True) 
-    is_correct: bool | None = Field(default=None) 
-    score: int = Field(default=0, ge=0) 
-    awarded_xp: int = Field(default=0, ge=0) 
-    status: UserAnswerStatus = Field(default=UserAnswerStatus.SUBMITTED, index=True) 
-    attempt: int = Field(default=1, ge=1) 
-    checked_at: datetime | None = Field(default=None) 
-
-    task: "Task" = Relationship(back_populates="user_answers") 
-    user: "User" = Relationship(back_populates="user_answers")
-    created_at: datetime = Field(default_factory=utc_now, nullable=False) 
+    created_at: datetime = Field(default_factory=utc_now, nullable=False)
     updated_at: datetime = Field(default_factory=utc_now, nullable=False)
-     
 
 
-class AchievementUser(SQLModel, table=True): 
-    __tablename__ = "achievement_users" 
-
-    id: int | None = Field(default=None, primary_key=True) 
-    achievement_id: int = Field(foreign_key="achievements.id", index=True) 
-    user_id: int = Field(foreign_key="users.id", index=True) 
-
-    created_at: datetime = Field(default_factory=utc_now, nullable=False) 
-
-    achievement: "Achievement" = Relationship(back_populates="user_links") 
-    user: "User" = Relationship(back_populates="achievement_links")
- 
-
-
-class UserCourseStatus(str, Enum): 
-    NOT_STARTED = "not_started" 
-    IN_PROGRESS = "in_progress" 
-    COMPLETED = "completed" 
-
-class UserCourse(SQLModel, table=True): 
-    __tablename__ = "user_courses" 
+class UserAnswer(SQLModel, table=True):
+    __tablename__ = "user_answers"
 
     id: int | None = Field(default=None, primary_key=True)
-    course_id: int = Field(foreign_key="courses.id", index=True) 
-    user_id: int = Field(foreign_key="users.id", index=True) 
-    status: UserCourseStatus = Field(default=UserCourseStatus.NOT_STARTED, index=True) 
-    progress_percent: float = Field(default=0, ge=0, le=100) 
-    xp_earned: int = Field(default=0, ge=0) 
+    task_id: int = Field(foreign_key="tasks.id", index=True)
+    answer_body: str
+    user_id: int = Field(foreign_key="users.id", index=True)
+    is_correct: bool | None = Field(default=None)
+    score: int = Field(default=0, ge=0)
+    awarded_xp: int = Field(default=0, ge=0)
+    is_correct: bool
+    attempt: int = Field(default=1, ge=1)
+    checked_at: datetime | None = Field(default=None)
 
-    started_at: datetime | None = Field(default=None) 
-    completed_at: datetime | None = Field(default=None) 
+    task: "Task" = Relationship(back_populates="user_answers")
+    user: "User" = Relationship(back_populates="user_answers")
+    created_at: datetime = Field(default_factory=utc_now, nullable=False)
+    updated_at: datetime = Field(default_factory=utc_now, nullable=False)
 
-    course: "Course" = Relationship(back_populates="user_courses") 
+
+class AchievementUser(SQLModel, table=True):
+    __tablename__ = "achievement_users"
+
+    id: int | None = Field(default=None, primary_key=True)
+    achievement_id: int = Field(foreign_key="achievements.id", index=True)
+    user_id: int = Field(foreign_key="users.id", index=True)
+
+    created_at: datetime = Field(default_factory=utc_now, nullable=False)
+
+    achievement: "Achievement" = Relationship(back_populates="user_links")
+    user: "User" = Relationship(back_populates="achievement_links")
+
+
+class UserCourseStatus(str, Enum):
+    NOT_STARTED = "not_started"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+
+
+class UserCourse(SQLModel, table=True):
+    __tablename__ = "user_courses"
+
+    id: int | None = Field(default=None, primary_key=True)
+    course_id: int = Field(foreign_key="courses.id", index=True)
+    user_id: int = Field(foreign_key="users.id", index=True)
+    status: UserCourseStatus = Field(default=UserCourseStatus.NOT_STARTED, index=True)
+    progress_percent: float = Field(default=0, ge=0, le=100)
+    xp_earned: int = Field(default=0, ge=0)
+
+    started_at: datetime | None = Field(default=None)
+    completed_at: datetime | None = Field(default=None)
+
+    course: "Course" = Relationship(back_populates="user_courses")
     user: "User" = Relationship(back_populates="user_courses")

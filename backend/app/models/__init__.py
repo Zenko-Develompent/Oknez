@@ -1,6 +1,6 @@
-from app.models.achievements import Achievement, UserAchievement
+from app.models.achievements import Achievement
 from app.models.courses import Course, CourseCategory, Module, Task, TaskType, Topic
-from app.models.users import Profile, Role, User
+from app.models.users import AchievementUser, Role, User, UserAnswer, UserCourse
 
 __all__ = [
     "Achievement",
@@ -13,5 +13,7 @@ __all__ = [
     "TaskType",
     "Topic",
     "User",
-    "UserAchievement",
+    "AchievementUser",
+    "UserCourse",
+    "UserAnswer",
 ]

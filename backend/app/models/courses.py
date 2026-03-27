@@ -5,6 +5,8 @@ from enum import Enum
 
 from sqlmodel import Field, Relationship, SQLModel
 
+from app.models import UserAnswer, UserCourse
+
 
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
@@ -34,7 +36,9 @@ class Course(SQLModel, table=True):
     title: str = Field(index=True, max_length=255)
     description: str | None = Field(default=None, max_length=2000)
     is_published: bool = Field(default=False)
-    category_id: int | None = Field(default=None, foreign_key="course_categories.id", index=True)
+    category_id: int | None = Field(
+        default=None, foreign_key="course_categories.id", index=True
+    )
     created_at: datetime = Field(default_factory=utc_now, nullable=False)
     updated_at: datetime = Field(default_factory=utc_now, nullable=False)
 
@@ -91,5 +95,3 @@ class Task(SQLModel, table=True):
 
     user_answers: list["UserAnswer"] = Relationship(back_populates="task")
     topic: "Topic" = Relationship(back_populates="tasks")
-
-
