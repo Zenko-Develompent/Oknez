@@ -1,11 +1,9 @@
 import styles from "./courseCard.module.css";
-import Link from "next/link";
 
 interface CardProps {
   category: string;
   title: string;
   description?: string;
-  detailsHref?: string;
   backgroundColor?: string;
   textColor?: string;
   descriptionColor?: string; // отдельный цвет для описания
@@ -16,7 +14,6 @@ export default function Card({
   category,
   title,
   description,
-  detailsHref = "/courseTheory",
   backgroundColor,
   textColor,
   descriptionColor,
@@ -40,12 +37,10 @@ export default function Card({
           {description}
         </p>
       )}
-      <Link
-        href={detailsHref}
-        className={styles.button}
+      <span className={styles.button}
       >
         Просмотреть подробнее
-      </Link>
+      </span>
       {children}
     </div>
   );

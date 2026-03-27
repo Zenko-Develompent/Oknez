@@ -3,8 +3,7 @@
 import { useMemo, useState } from "react";
 import Header from "@/components/header/header";
 import Sidebar from "@/components/sidebar/sidebar";
-import ButtonM from "@/components/buttonM/buttonM";
-import { useRouter } from "next/navigation";
+import Button from "@/components/button/button";
 import styles from "./course.module.css";
 
 type CourseItem =
@@ -66,7 +65,6 @@ const COURSE_FLOW: CourseItem[] = [
 ];
 
 export default function CourseTheoryPage() {
-  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalFlowSteps = COURSE_FLOW.length;
@@ -111,7 +109,6 @@ export default function CourseTheoryPage() {
 
   const handleNext = () => {
     if (isLastStep) {
-      router.push("/");
       return;
     }
 
@@ -157,7 +154,7 @@ export default function CourseTheoryPage() {
           <h1 className={styles.contentTitle}>{currentItem.title}</h1>
           <p className={styles.contentText}>{currentItem.text}</p>
           <div className={styles.nextButton}>
-            <ButtonM title={isLastStep ? "В каталог" : "Дальше"} onClick={handleNext} />
+            <Button size="m" variant="filled" fullWidth title={isLastStep ? "В каталог" : "Дальше"} onClick={handleNext} />
           </div>
         </main>
       </div>

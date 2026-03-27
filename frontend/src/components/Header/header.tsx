@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function Header() {
   return (
     <header className={styles.header}>
-      <Link href="/" className={styles.logo}>
+      <Link href="#" className={styles.logo}>
         <img className={styles.logoImage} src={LogoIcon.src} alt="Логотип Бегемоша" />
         Бегемоша
       </Link>
@@ -32,7 +32,7 @@ export default function Header() {
         </ul>
       </nav>
 
-      <Link href="/login" className={styles.profile} aria-label="Войти в аккаунт">
+      <Link href="#" className={styles.profile} aria-label="Войти в аккаунт">
         <img src={AccountIcon.src} alt="" />
       </Link>
     </header>

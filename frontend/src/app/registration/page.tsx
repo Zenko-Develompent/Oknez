@@ -1,14 +1,11 @@
 'use client'
 
 import Input from "@/components/input/input";
-import ButtoM from "@/components/buttonM/buttonM";
+import Button from "@/components/button/button";
 import HipoChild from "@/shared/assets/images/hipochild.png";
 import HipoParent from "@/shared/assets/images/hipoparent.png";
-import { useRouter } from "next/navigation";
 import styles from './registration.module.css';
 export default function RegistrationPage() {
-  const router = useRouter();
-
   return (
     <div>
       <div className={styles.main}>
@@ -45,10 +42,10 @@ export default function RegistrationPage() {
 								placeholder="Введите пароль"
 								type="password"
 							/>
-              <ButtoM title="Создать аккаунт" onClick={() => router.push("/")} />
+              <Button size="m" variant="filled" fullWidth title="Создать аккаунт" />
               
 							<div className="hadaccount">
-								<span>Уже есть аккаунт?</span> <a href="/login">Войти</a>
+								<span>Уже есть аккаунт?</span> <a href="#">Войти</a>
 							</div>
             </div>
         </div>
