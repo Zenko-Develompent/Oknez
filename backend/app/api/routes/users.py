@@ -43,7 +43,7 @@ class UserPublic(SQLModel):
 
 
 
-@router.post("/register", response_model=UserPublic, status_code=status.HTTP_201_CREATED)
+@router.post("/users/register")
 def register_user(payload: UserRegister, session: Session = Depends(get_session)):
     existing_user = session.exec(
         select(User).where(User.mail == payload.mail)
@@ -55,19 +55,30 @@ def register_user(payload: UserRegister, session: Session = Depends(get_session)
             detail="User with this email already exists",
         )
 
-    user = User(
+    user_role = session.exec(
+        select(Role).where(Role.name == "user")
+    ).first()
+
+    if not user_role:
+        user_role = Role(name="user")
+        session.add(user_role)
+        session.commit()
+        session.refresh(user_role)
+
+    new_user = User(
         first_name=payload.first_name,
         last_name=payload.last_name,
         mail=payload.mail,
         password=hash_password(payload.password),
-        role_id=1,
+        role_id=user_role.id,
     )
 
-    session.add(user)
+    session.add(new_user)
     session.commit()
-    session.refresh(user)
+    session.refresh(new_user)
 
-    return user
+    return new_user
+
 
 
 @router.post("/login")
