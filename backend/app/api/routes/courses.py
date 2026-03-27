@@ -5,8 +5,8 @@ from collections import defaultdict
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Field, SQLModel, Session, select
 
-from app.db import get_session
-from app.models.courses import Course, CourseCategory, Module, Task, TaskType, Topic
+from app.core.db import get_session
+from app.models.models import Course, CourseCategory, Module, Task, TaskType, Topic
 
 
 router = APIRouter(prefix="/api", tags=["courses"])

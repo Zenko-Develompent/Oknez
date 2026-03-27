@@ -5,8 +5,8 @@ from fastapi.exceptions import HTTPException
 from jose import JWTError, jwt
 from sqlmodel import Session, select
 
-from app.db import get_session
-from app.models.users import Profile, Role, User, UserAuth
+from app.core.db import get_session
+from app.models.models import Role, User
 
 router = APIRouter(prefix="/users", tags=["users"])
 SECRET_KEY = "super-secret-key"
