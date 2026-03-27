@@ -23,11 +23,20 @@
 
   --color-logo: #8555DB;
 
-  --state-default: #51C5F3;
-  --state-hoover: #3FB8EA;
-  --state-active: #2FA5D8;
-  --state-disabled: #BFE7F6;
+  --color-logo-default: #AA82F2;
+  --color-logo-hoover: #8555DB;
+  --color-logo-active: #7E36FF;
+  --color-logo-disabled: #D0B6FF;
 
+  --state-blue-default: #51C5F3;
+  --state-blue-hoover: #3FB8EA;
+  --state-blue-active: #2FA5D8;
+  --state-blue-disabled: #BFE7F6;
+
+  --state-orange-default: #F77603;
+  --state-orange-hoover: #E66C00;
+  --state-orange-active: #C75E00;
+  --state-orange-disabled: #FFA85A;
   
 }
 /* использовать любую перменную в roote надо с помощью var()

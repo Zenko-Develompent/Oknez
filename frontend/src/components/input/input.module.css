@@ -11,12 +11,13 @@
 	border-radius: 16px;
 	font-size: calc(16px + 4 * (100vw - 320px) / 1600);
 	margin-top: 5px;
-  width: 100%;
-	border: 2px solid #000000;
+  	width: 100%;
+	border: 2px solid var(--text-color2);
 	background-color: rgba(255, 255, 255, 0.74);
 }
 
 .label {
 	font-weight: 600;
 	font-size: 20px;
+	color: var(--text-color2);
 }

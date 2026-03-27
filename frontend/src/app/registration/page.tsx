@@ -41,7 +41,7 @@ export default function RegistrationPage() {
             <Button
               size="m"
               variant="filled"
-              backgroundColor="var(--color-logo)"
+              color="logo"
               fullWidth
               title="Создать аккаунт"
             />

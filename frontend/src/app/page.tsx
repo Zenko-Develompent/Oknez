@@ -40,14 +40,19 @@ export default function Home() {
             </h2>
           </div>
           <div className={styles.filters}>
+            <Button size="m" variant="filled" color="white" title="Все курсы" />
             <Button
-              size="s"
+              size="m"
               variant="filled"
-              title="Все курсы"
-              backgroundColor="var(--state-default)"
+              color="blue"
+              title="Программирование"
             />
-            <Button size="s" variant="filled" title="Программирование" />
-            <Button size="s" variant="filled" title="Цифровая грамотность" />
+            <Button
+              size="m"
+              variant="filled"
+              color="orange"
+              title="Цифровая грамотность"
+            />
           </div>
         </div>
 
@@ -82,9 +87,19 @@ export default function Home() {
             </h2>
           </div>
           <div className={styles.filters}>
-            <Button size="s" variant="filled" title="Все курсы" />
-            <Button size="s" variant="filled" title="Программирование" />
-            <Button size="s" variant="filled" title="Цифровая грамотность" />
+            <Button size="m" variant="filled" color="white" title="Все курсы" />
+            <Button
+              size="m"
+              variant="filled"
+              color="blue"
+              title="Программирование"
+            />
+            <Button
+              size="m"
+              variant="filled"
+              color="orange"
+              title="Цифровая грамотность"
+            />
           </div>
         </div>
 

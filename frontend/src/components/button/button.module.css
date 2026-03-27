@@ -1,5 +1,4 @@
 .button {
-  color: black;
   font-weight: 500;
   text-align: center;
   cursor: pointer;
@@ -10,21 +9,15 @@
   align-items: center;
   justify-content: center;
   align-self: center;
-  transition: filter 0.2s ease, opacity 0.2s ease;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  border: none;
 }
 
-.button:hover {
-  filter: brightness(0.98);
-}
-
-.button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
+/* Размеры */
 .sizeS {
   font-size: calc(12px + 4 * (100vw - 320px) / 1600);
-  padding: 8px 32px;
+  padding: 8px 24px;
 }
 
 .sizeM {
@@ -32,19 +25,91 @@
   padding: 12px 32px;
 }
 
+/* Filled вариант */
 .filled {
-  border: none;
+  background-color: var(--button-bg);
+  color: white;
 }
 
+.filled:hover:not(:disabled) {
+  background-color: var(--button-hover);
+  transform: translateY(-1px);
+}
+
+.filled:active:not(:disabled) {
+  background-color: var(--button-active);
+  transform: translateY(0);
+}
+
+/* Белая кнопка */
+.white {
+  background-color: var(--button-bg);
+  color: #1a1a2e;
+  border: 1px solid #000000;
+}
+
+.white:hover:not(:disabled) {
+  background-color: var(--button-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.white:active:not(:disabled) {
+  background-color: var(--button-active);
+  transform: translateY(0);
+}
+
+.white:disabled {
+  background-color: var(--button-disabled);
+  color: #94a3b8;
+  border-color: #cbd5e1;
+}
+
+/* Outline вариант */
 .outline {
   background-color: transparent;
-  border: 2px solid #000;
+  border: 2px solid var(--button-bg);
+  color: var(--button-bg);
+}
+
+.outline:hover:not(:disabled) {
+  background-color: var(--button-bg);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.outline:active:not(:disabled) {
+  background-color: var(--button-active);
+  border-color: var(--button-active);
+  transform: translateY(0);
 }
 
 .sizeS.outline {
   border-width: 1px;
 }
 
+/* Disabled состояние */
+.button:disabled {
+  cursor: not-allowed;
+  transform: none;
+  background-color: var(--button-disabled) !important;
+  color: white;
+  opacity: 0.8;
+}
+
+.outline:disabled {
+  background-color: transparent !important;
+  border-color: var(--button-disabled);
+  color: var(--button-disabled);
+}
+
+.white:disabled {
+  background-color: var(--button-disabled) !important;
+  color: #94a3b8;
+  border-color: #cbd5e1;
+}
+
+/* Full width */
 .fullWidth {
   width: 100%;
 }

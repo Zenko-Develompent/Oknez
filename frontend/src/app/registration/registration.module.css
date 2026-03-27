@@ -5,9 +5,9 @@
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  background-image: url("../../shared/assets/images/backgroundRegistration.png");
+  background-image: url("../../shared/assets/images/backgroundRegFinal.png");
   background-repeat: no-repeat;
-  background-position: bottom;
+  background-position: center;
   background-size: cover;
 
 }
