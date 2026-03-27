@@ -1,0 +1,60 @@
+.page {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  min-height: 100vh;
+  padding-top: 60px;
+}
+
+.content {
+  padding: 40px;
+}
+
+.stepBanner {
+  padding: 0 0 12px;
+  margin-bottom: 18px;
+}
+
+.stepBannerTop {
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.stepBannerBottom {
+  display: flex;
+  align-items: center;
+}
+
+.stepSegments {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.stepSegment {
+  flex: 1;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
+}
+
+.stepSegmentActive {
+  background: #000;
+}
+
+.contentTitle {
+  font-size: var(--heading3);
+  margin-bottom: 16px;
+}
+
+.contentText {
+  font-size: var(--heading5);
+  line-height: 1.4;
+  max-width: 760px;
+}
+
+.nextButton {
+  margin-top: 28px;
+  max-width: 220px;
+}

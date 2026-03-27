@@ -1,5 +1,5 @@
 import Card from "@/components/coursesCards/courseCard";
-import ButtonS from "@/components/buttonS/buttonS";
+import Button from "@/components/button/button";
 import Header from "@/components/header/header";
 import HipoImg from "@/shared/assets/images/hipocatalog.png";
 import styles from "./page.module.css";
@@ -30,9 +30,9 @@ export default function Home() {
             <h2 className={styles.my_title_filter} id="myCourses">Мои курсы</h2>
           </div>
           <div className={styles.filters}>
-            <ButtonS title="Все курсы" />
-						<ButtonS title="Программирование" />
-						<ButtonS title="Цифровая грамотность" />
+            <Button size="s" variant="filled" title="Все курсы" />
+						<Button size="s" variant="filled" title="Программирование" />
+						<Button size="s" variant="filled" title="Цифровая грамотность" />
           </div>
         </div>
         
@@ -65,9 +65,9 @@ export default function Home() {
             <h2 className={styles.my_title_filter} id="allCourses">Все курсы</h2>
           </div>
           <div className={styles.filters}>
-            <ButtonS title="Все курсы" />
-						<ButtonS title="Программирование" />
-						<ButtonS title="Цифровая грамотность" />
+            <Button size="s" variant="filled" title="Все курсы" />
+						<Button size="s" variant="filled" title="Программирование" />
+						<Button size="s" variant="filled" title="Цифровая грамотность" />
           </div>
         </div>
         

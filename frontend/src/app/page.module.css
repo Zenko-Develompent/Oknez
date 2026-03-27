@@ -1,0 +1,70 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  padding: 110px 100px 50px;
+}
+.aboutus{
+  padding: 75px 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex: 1;
+}
+.description{
+  display: flex;
+  flex-direction: column;
+  max-width: 750px;
+}
+.title{
+  font-size: var(--heading2);
+}
+.text{
+  font-size: var(--heading4);
+}
+.title_filter{
+  font-size: var(--heading3);
+}
+.filter_wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 100px 75px;
+}
+.filters{
+  gap: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.card_wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex: 1;
+  gap: 50px;
+  width: 100%;
+}
+
+.my_title_filter{
+  font-size: var(--heading3);
+}
+.my_filter_wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 75px 7px;
+}
+.my_filters{
+  gap: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.my_card_wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex: 1;
+  gap: 50px;
+  width: 100%;
+}

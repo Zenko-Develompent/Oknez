@@ -1,13 +1,11 @@
 "use client";
 
 import Input from "@/components/input/input";
-import ButtoM from "@/components/buttonM/buttonM";
+import Button from "@/components/button/button";
 import HipoLogin from "@/shared/assets/images/hipilogin.png";
-import Link from "next/link";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
-
   return (
     <div className={styles.main}>
       <div className={styles.loginWindow}>
@@ -30,15 +28,15 @@ export default function LoginPage() {
             type="password"
           />
 
-					<ButtoM 
+					<Button size="m" variant="filled" fullWidth 
 						title="Войти"
 					/>
 
           <p className={styles.registerText}>
             Еще нет аккаунта?{" "}
-            <Link href="/registration" className={styles.registerLink}>
+            <span className={styles.registerLink}>
               Создать аккаунт
-            </Link>
+            </span>
           </p>
         </div>
       </div>
