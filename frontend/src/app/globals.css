@@ -10,6 +10,25 @@
   --heading4: 28px;
   --heading5: 21px;
   
+
+  /*Цвета*/
+  --primary-color: #51C5F3;
+  --secondary-color: #EDD4EC;
+
+  --text-color1: #1F1A2B;
+  --text-color2: #5A4E7C;
+  --text-color3: #ffffff;
+  --text-color4: rgba(142 138 163); 
+  --textcolor5: #C5C2D6;
+
+  --color-logo: #8555DB;
+
+  --state-default: #51C5F3;
+  --state-hoover: #3FB8EA;
+  --state-active: #2FA5D8;
+  --state-disabled: #BFE7F6;
+
+  
 }
 /* использовать любую перменную в roote надо с помощью var()
  обращаешься по селектору к обьекту и в стиле прописывашь так: 
@@ -20,3 +39,4 @@
   padding: 0;
   font-family: "Montserrat", sans-serif;
 }
+
