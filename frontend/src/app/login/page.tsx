@@ -4,9 +4,11 @@ import Input from "@/components/input/input";
 import ButtoM from "@/components/buttonM/buttonM";
 import HipoLogin from "@/shared/assets/images/hipilogin.png";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
+  const router = useRouter();
 
   return (
     <div className={styles.main}>
@@ -32,6 +34,7 @@ export default function LoginPage() {
 
 					<ButtoM 
 						title="Войти"
+						onClick={() => router.push("/")}
 					/>
 
           <p className={styles.registerText}>

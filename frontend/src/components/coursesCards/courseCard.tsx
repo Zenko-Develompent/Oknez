@@ -1,10 +1,11 @@
 import styles from "./courseCard.module.css";
+import Link from "next/link";
 
 interface CardProps {
   category: string;
   title: string;
   description?: string;
-  onClick?: () => void;
+  detailsHref?: string;
   backgroundColor?: string;
   textColor?: string;
   descriptionColor?: string; // отдельный цвет для описания
@@ -15,7 +16,7 @@ export default function Card({
   category,
   title,
   description,
-  onClick,
+  detailsHref = "/courseTheory",
   backgroundColor,
   textColor,
   descriptionColor,
@@ -31,7 +32,7 @@ export default function Card({
   };
 
   return (
-    <div className={styles.card} style={customStyle} onClick={onClick}>
+    <div className={styles.card} style={customStyle}>
       <span className={styles.category}>{category}</span>
       <h3 className={styles.title}>{title}</h3>
       {description && (
@@ -39,7 +40,12 @@ export default function Card({
           {description}
         </p>
       )}
-      <button className={styles.button}>Просмотреть подробнее</button>
+      <Link
+        href={detailsHref}
+        className={styles.button}
+      >
+        Просмотреть подробнее
+      </Link>
       {children}
     </div>
   );

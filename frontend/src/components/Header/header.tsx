@@ -20,8 +20,8 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link href="#!" className={styles.link}>
-              О платформе
+            <Link href="#allCourses" className={styles.link}>
+              Каталог
             </Link>
           </li>
           <li>
@@ -32,9 +32,9 @@ export default function Header() {
         </ul>
       </nav>
 
-      <div className={styles.profile}>
+      <Link href="/login" className={styles.profile} aria-label="Войти в аккаунт">
         <img src={AccountIcon.src} alt="" />
-      </div>
+      </Link>
     </header>
   );
 }
