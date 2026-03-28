@@ -163,6 +163,7 @@ export interface TaskTreePublic {
   description: string | null;
   task_type: TaskType;
   question_text: string | null;
+  theory_content: string | null;
   answer_options: string | null;
   compiler_initial_code: string | null;
   order_index: number;

@@ -31,6 +31,9 @@ def ensure_runtime_schema() -> None:
     if "question_text" not in task_columns:
         statements.append("ALTER TABLE tasks ADD COLUMN question_text TEXT")
 
+    if "theory_content" not in task_columns:
+        statements.append("ALTER TABLE tasks ADD COLUMN theory_content TEXT")
+
     if "answer_options" not in task_columns:
         statements.append("ALTER TABLE tasks ADD COLUMN answer_options TEXT")
 

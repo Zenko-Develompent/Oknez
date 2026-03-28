@@ -1,69 +1,72 @@
 {
     "schema_version":  "1.0",
-    "category_title":  "Digital Literacy",
+    "category_title":  "Цифровая грамотность",
     "course":  {
-                   "title":  "Demo Course: Internet Safety",
-                   "description":  "Practical online safety course for beginners.",
-                   "audience":  "Beginner",
+                   "title":  "Демо-курс: Безопасность в интернете",
+                   "description":  "Демонстрационный курс по базовой кибербезопасности.",
+                   "audience":  "Новички, 9+",
                    "outcomes":  [
-                                    "Protect accounts",
-                                    "Detect phishing",
-                                    "Check sources and privacy settings"
+                                    "Защищать аккаунт и пароль",
+                                    "Распознавать фишинг",
+                                    "Проверять источники и настройки приватности"
                                 ],
                    "is_published":  true
                },
     "modules":  [
                     {
                         "order_index":  1,
-                        "title":  "Module 1. Safe accounts",
-                        "description":  "Protect account access.",
+                        "title":  "Модуль 1. Защита аккаунтов",
+                        "description":  "Пароли, 2FA и защита от фишинга.",
                         "topics":  [
                                        {
                                            "order_index":  1,
-                                           "title":  "Topic 1. Password rules",
-                                           "description":  "Strong password basics.",
+                                           "title":  "Тема 1. Пароли и 2FA",
+                                           "description":  "Надежные пароли и двухфакторная защита.",
                                            "tasks":  [
                                                          {
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
-                                                             "title":  "Lecture: Strong passwords",
-                                                             "description":  "Theory lesson.",
+                                                             "title":  "Лекция: надежный пароль",
+                                                             "description":  "Теория по базовой защите аккаунта.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/demo-internet-safety/module-1/topic-1/task-1.md",
-                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "question_text":  "Прочитай лекцию и переходи к практике.",
+                                                             "theory_content":  "Надежный пароль должен быть длинным и уникальным.\nНельзя использовать один пароль на всех сайтах.\n2FA добавляет второй шаг проверки входа.\nНикому не передавай пароль и коды подтверждения.",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  2,
                                                              "task_type":  "practice",
-                                                             "title":  "Practice: Secure login checklist",
-                                                             "description":  "Single-choice practice.",
+                                                             "title":  "Практика: чеклист входа",
+                                                             "description":  "Выбери верный вариант.",
                                                              "xp_reward":  30,
                                                              "correct_answers":  "2fa",
                                                              "md_path":  "content/tasks/demo-internet-safety/module-1/topic-1/task-2.md",
-                                                             "question_text":  "What should always be enabled on important accounts?",
+                                                             "question_text":  "Что обязательно включить для защиты важного аккаунта?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
                                                                                     "2fa",
-                                                                                    "same password everywhere",
-                                                                                    "share password with friends"
+                                                                                    "один пароль везде",
+                                                                                    "сообщить пароль другу"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  3,
                                                              "task_type":  "quiz",
-                                                             "title":  "Quiz: Password quality",
-                                                             "description":  "Single-choice check.",
+                                                             "title":  "Квиз: качество пароля",
+                                                             "description":  "Проверка понимания темы.",
                                                              "xp_reward":  20,
-                                                             "correct_answers":  "unique password",
+                                                             "correct_answers":  "уникальный пароль",
                                                              "md_path":  "content/tasks/demo-internet-safety/module-1/topic-1/task-3.md",
-                                                             "question_text":  "What is a good password habit?",
+                                                             "question_text":  "Какая привычка делает пароль безопаснее?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "unique password",
-                                                                                    "short password",
-                                                                                    "public password note"
+                                                                                    "уникальный пароль",
+                                                                                    "короткий пароль",
+                                                                                    "пароль в заметках"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          }
@@ -71,50 +74,53 @@
                                        },
                                        {
                                            "order_index":  2,
-                                           "title":  "Topic 2. Phishing",
-                                           "description":  "Spot suspicious messages.",
+                                           "title":  "Тема 2. Фишинг",
+                                           "description":  "Как распознавать подозрительные сообщения.",
                                            "tasks":  [
                                                          {
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
-                                                             "title":  "Lecture: Phishing signals",
-                                                             "description":  "Theory lesson.",
+                                                             "title":  "Лекция: признаки фишинга",
+                                                             "description":  "Теория по фишингу.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/demo-internet-safety/module-1/topic-2/task-1.md",
-                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "question_text":  "Прочитай лекцию и переходи к практике.",
+                                                             "theory_content":  "Фишинговые письма часто давят на срочность.\nПеред переходом всегда проверяй адрес сайта.\nНикогда не вводи пароль по ссылке из сомнительного письма.\nОфициальные сервисы не просят код из SMS в чате.",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  2,
                                                              "task_type":  "practice",
-                                                             "title":  "Practice: Suspicious email",
-                                                             "description":  "Single-choice practice.",
+                                                             "title":  "Практика: подозрительное письмо",
+                                                             "description":  "Выбери верный вариант.",
                                                              "xp_reward":  35,
-                                                             "correct_answers":  "check domain",
+                                                             "correct_answers":  "проверить домен",
                                                              "md_path":  "content/tasks/demo-internet-safety/module-1/topic-2/task-2.md",
-                                                             "question_text":  "What is the safest first action with suspicious email?",
+                                                             "question_text":  "Какое действие самое безопасное при подозрительном письме?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "check domain",
-                                                                                    "open attachment",
-                                                                                    "enter password"
+                                                                                    "проверить домен",
+                                                                                    "открыть вложение",
+                                                                                    "ввести пароль"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  3,
                                                              "task_type":  "quiz",
-                                                             "title":  "Quiz: Secret data",
-                                                             "description":  "Single-choice check.",
+                                                             "title":  "Квиз: секретные данные",
+                                                             "description":  "Проверка понимания темы.",
                                                              "xp_reward":  20,
-                                                             "correct_answers":  "never share password",
+                                                             "correct_answers":  "никому не сообщать пароль",
                                                              "md_path":  "content/tasks/demo-internet-safety/module-1/topic-2/task-3.md",
-                                                             "question_text":  "What data should never be shared in chat?",
+                                                             "question_text":  "Какие данные нельзя сообщать в переписке?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "never share password",
-                                                                                    "favorite color",
-                                                                                    "game nickname"
+                                                                                    "никому не сообщать пароль",
+                                                                                    "любимый цвет",
+                                                                                    "ник в игре"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          }
@@ -124,55 +130,58 @@
                     },
                     {
                         "order_index":  2,
-                        "title":  "Module 2. Smart browsing",
-                        "description":  "Verify information and privacy.",
+                        "title":  "Модуль 2. Осознанный интернет",
+                        "description":  "Проверка информации и приватность.",
                         "topics":  [
                                        {
                                            "order_index":  1,
-                                           "title":  "Topic 3. Fact-checking",
-                                           "description":  "Validate online claims.",
+                                           "title":  "Тема 3. Проверка источников",
+                                           "description":  "Как отличать факты от сомнительных утверждений.",
                                            "tasks":  [
                                                          {
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
-                                                             "title":  "Lecture: Source verification",
-                                                             "description":  "Theory lesson.",
+                                                             "title":  "Лекция: фактчекинг",
+                                                             "description":  "Теория по проверке информации.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/demo-internet-safety/module-2/topic-1/task-1.md",
-                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "question_text":  "Прочитай лекцию и переходи к практике.",
+                                                             "theory_content":  "Фактчекинг начинается с первоисточника.\nВажно сверять дату публикации и автора.\nПроверяй информацию минимум в двух независимых источниках.\nЯркий заголовок не гарантирует правдивость.",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  2,
                                                              "task_type":  "practice",
-                                                             "title":  "Practice: News check",
-                                                             "description":  "Single-choice practice.",
+                                                             "title":  "Практика: проверка новости",
+                                                             "description":  "Выбери верный вариант.",
                                                              "xp_reward":  35,
-                                                             "correct_answers":  "primary source",
+                                                             "correct_answers":  "первоисточник",
                                                              "md_path":  "content/tasks/demo-internet-safety/module-2/topic-1/task-2.md",
-                                                             "question_text":  "Where should fact-checking start?",
+                                                             "question_text":  "С чего лучше начать проверку новости?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "primary source",
-                                                                                    "social repost",
-                                                                                    "clickbait title"
+                                                                                    "первоисточник",
+                                                                                    "репост без проверки",
+                                                                                    "яркий заголовок"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  3,
                                                              "task_type":  "quiz",
-                                                             "title":  "Quiz: Reliable evidence",
-                                                             "description":  "Single-choice check.",
+                                                             "title":  "Квиз: признак достоверности",
+                                                             "description":  "Проверка понимания темы.",
                                                              "xp_reward":  20,
-                                                             "correct_answers":  "publication date",
+                                                             "correct_answers":  "дата публикации",
                                                              "md_path":  "content/tasks/demo-internet-safety/module-2/topic-1/task-3.md",
-                                                             "question_text":  "Which detail helps verify a claim?",
+                                                             "question_text":  "Что помогает проверить достоверность материала?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "publication date",
-                                                                                    "emoji count",
-                                                                                    "font color"
+                                                                                    "дата публикации",
+                                                                                    "число эмодзи",
+                                                                                    "цвет шрифта"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          }
@@ -180,50 +189,53 @@
                                        },
                                        {
                                            "order_index":  2,
-                                           "title":  "Topic 4. Privacy settings",
-                                           "description":  "Protect personal data online.",
+                                           "title":  "Тема 4. Настройки приватности",
+                                           "description":  "Защита личных данных в профилях.",
                                            "tasks":  [
                                                          {
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
-                                                             "title":  "Lecture: Privacy basics",
-                                                             "description":  "Theory lesson.",
+                                                             "title":  "Лекция: приватность профиля",
+                                                             "description":  "Теория по настройкам приватности.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/demo-internet-safety/module-2/topic-2/task-1.md",
-                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "question_text":  "Прочитай лекцию и переходи к практике.",
+                                                             "theory_content":  "Приватность — это контроль над тем, кто видит твои данные.\nОграничивай видимость профиля для незнакомых людей.\nОтключай лишние разрешения приложений.\nРегулярно проверяй настройки безопасности аккаунта.",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  2,
                                                              "task_type":  "practice",
-                                                             "title":  "Practice: Profile visibility",
-                                                             "description":  "Single-choice practice.",
+                                                             "title":  "Практика: защита профиля",
+                                                             "description":  "Выбери верный вариант.",
                                                              "xp_reward":  40,
-                                                             "correct_answers":  "limit profile visibility",
+                                                             "correct_answers":  "ограничить видимость профиля",
                                                              "md_path":  "content/tasks/demo-internet-safety/module-2/topic-2/task-2.md",
-                                                             "question_text":  "Which action improves account privacy?",
+                                                             "question_text":  "Какое действие улучшает приватность профиля?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "limit profile visibility",
-                                                                                    "make everything public",
-                                                                                    "disable updates forever"
+                                                                                    "ограничить видимость профиля",
+                                                                                    "сделать профиль полностью открытым",
+                                                                                    "отключить все обновления"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  3,
                                                              "task_type":  "quiz",
-                                                             "title":  "Quiz: Privacy term",
-                                                             "description":  "Single-choice check.",
+                                                             "title":  "Квиз: термин по защите данных",
+                                                             "description":  "Проверка понимания темы.",
                                                              "xp_reward":  25,
-                                                             "correct_answers":  "privacy",
+                                                             "correct_answers":  "приватность",
                                                              "md_path":  "content/tasks/demo-internet-safety/module-2/topic-2/task-3.md",
-                                                             "question_text":  "Which word means personal data protection?",
+                                                             "question_text":  "Какое слово обозначает защиту личных данных?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "privacy",
-                                                                                    "publicity",
-                                                                                    "virality"
+                                                                                    "приватность",
+                                                                                    "публичность",
+                                                                                    "вирусность"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          }

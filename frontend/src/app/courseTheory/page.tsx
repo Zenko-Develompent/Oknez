@@ -71,6 +71,7 @@ function parseAnswerOptions(raw: string | null | undefined): string[] {
 function resolveLessonInteraction(lesson: TaskTreePublic): LessonInteraction {
   const prompt =
     lesson.question_text?.trim() ||
+    lesson.theory_content?.trim() ||
     lesson.description?.trim() ||
     "Ответь на вопрос по материалу урока.";
 
@@ -613,6 +614,7 @@ function CourseTheoryPageContent() {
   const showCompilerCheckButton =
     activeLesson.task_type !== "lecture" &&
     lessonInteraction.interactionType === "compiler";
+  const lectureTheoryText = activeLesson.theory_content?.trim() || lessonInteraction.prompt;
 
   return (
     <div>
@@ -690,7 +692,7 @@ function CourseTheoryPageContent() {
             {lessonInteraction.interactionType === "theory" && (
               <section className={styles.quizBlock}>
                 <h2 className={styles.quizTitle}>Теория</h2>
-                <p className={styles.quizSummary}>{lessonInteraction.prompt}</p>
+                <p className={styles.contentText}>{lectureTheoryText}</p>
               </section>
             )}
 

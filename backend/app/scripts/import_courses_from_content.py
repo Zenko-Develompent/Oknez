@@ -161,6 +161,7 @@ def get_or_create_task(
     order_index: int,
     correct_answers: str | None,
     question_text: str | None,
+    theory_content: str | None,
     answer_options: str | None,
     compiler_initial_code: str | None,
     xp_reward: int,
@@ -180,6 +181,7 @@ def get_or_create_task(
             order_index=order_index,
             correct_answers=correct_answers,
             question_text=question_text,
+            theory_content=theory_content,
             answer_options=answer_options,
             compiler_initial_code=compiler_initial_code,
             xp_reward=xp_reward,
@@ -193,6 +195,7 @@ def get_or_create_task(
     task.order_index = order_index
     task.correct_answers = correct_answers
     task.question_text = question_text
+    task.theory_content = theory_content
     task.answer_options = answer_options
     task.compiler_initial_code = compiler_initial_code
     task.xp_reward = xp_reward
@@ -264,6 +267,7 @@ def import_course_file(session: Session, file_path: Path) -> dict[str, int]:
                         task_payload.get("correct_answers")
                     ),
                     question_text=normalize_optional_text(task_payload.get("question_text")),
+                    theory_content=normalize_optional_text(task_payload.get("theory_content")),
                     answer_options=normalize_answer_options(
                         task_payload.get("answer_options")
                     ),

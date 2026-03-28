@@ -183,6 +183,7 @@ class Task(SQLModel, table=True):
     md_path: Optional[str] = Field(default=None, max_length=500)
     correct_answers: Optional[str] = Field(default=None, max_length=2000)
     question_text: Optional[str] = Field(default=None, max_length=2000)
+    theory_content: Optional[str] = Field(default=None, max_length=16000)
     answer_options: Optional[str] = Field(default=None, max_length=8000)
     compiler_initial_code: Optional[str] = Field(default=None, max_length=8000)
     xp_reward: int = Field(default=0, ge=0)

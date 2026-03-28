@@ -1,61 +1,64 @@
 {
     "schema_version":  "1.0",
-    "category_title":  "Creative Technology",
+    "category_title":  "Проектное мышление",
     "course":  {
-                   "title":  "Demo Course: Web and Project Basics",
-                   "description":  "Starter course about web structure and project thinking.",
-                   "audience":  "Beginner",
+                   "title":  "Демо-курс: Веб и мини-проекты",
+                   "description":  "Демонстрационный курс по HTML/CSS и базовой проектной логике.",
+                   "audience":  "Новички, 10+",
                    "outcomes":  [
-                                    "Understand HTML and CSS basics",
-                                    "Plan simple projects",
-                                    "Use structured debugging steps"
+                                    "Понимать базовые теги HTML",
+                                    "Ориентироваться в основных CSS-свойствах",
+                                    "Применять пошаговый подход к мини-проектам"
                                 ],
                    "is_published":  true
                },
     "modules":  [
                     {
                         "order_index":  1,
-                        "title":  "Module 1. Web basics",
-                        "description":  "Understand page structure and style.",
+                        "title":  "Модуль 1. База веба",
+                        "description":  "Структура страницы и стили.",
                         "topics":  [
                                        {
                                            "order_index":  1,
-                                           "title":  "Topic 1. HTML ideas",
-                                           "description":  "Tags and page blocks.",
+                                           "title":  "Тема 1. Основы HTML",
+                                           "description":  "Теги и структура страницы.",
                                            "tasks":  [
                                                          {
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
-                                                             "title":  "Lecture: HTML structure",
-                                                             "description":  "Theory lesson.",
+                                                             "title":  "Лекция: структура HTML",
+                                                             "description":  "Теория по HTML.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/demo-web-project/module-1/topic-1/task-1.md",
-                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "question_text":  "Прочитай лекцию и переходи к практике.",
+                                                             "theory_content":  "HTML описывает структуру веб-страницы.\nТеги h1-h6 отвечают за заголовки.\nТег p используется для абзацев.\nТег a создает ссылку на другую страницу.",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  2,
                                                              "task_type":  "practice",
-                                                             "title":  "Practice: Heading tag",
-                                                             "description":  "Write short text answer.",
+                                                             "title":  "Практика: тег главного заголовка",
+                                                             "description":  "Введи короткий ответ.",
                                                              "xp_reward":  25,
                                                              "correct_answers":  "h1",
                                                              "md_path":  "content/tasks/demo-web-project/module-1/topic-1/task-2.md",
-                                                             "question_text":  "Type only the tag name used for the main page heading.",
+                                                             "question_text":  "Введи имя тега для главного заголовка страницы.",
+                                                             "theory_content":  "",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  3,
                                                              "task_type":  "quiz",
-                                                             "title":  "Quiz: Link tag",
-                                                             "description":  "Single-choice check.",
+                                                             "title":  "Квиз: тег ссылки",
+                                                             "description":  "Проверка понимания темы.",
                                                              "xp_reward":  20,
                                                              "correct_answers":  "a",
                                                              "md_path":  "content/tasks/demo-web-project/module-1/topic-1/task-3.md",
-                                                             "question_text":  "Which HTML tag creates a clickable link?",
+                                                             "question_text":  "Какой HTML-тег создает кликабельную ссылку?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
                                                                                     "a",
                                                                                     "div",
@@ -67,46 +70,49 @@
                                        },
                                        {
                                            "order_index":  2,
-                                           "title":  "Topic 2. CSS ideas",
-                                           "description":  "Colors and spacing.",
+                                           "title":  "Тема 2. Основы CSS",
+                                           "description":  "Цвета, отступы и оформление.",
                                            "tasks":  [
                                                          {
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
-                                                             "title":  "Lecture: CSS properties",
-                                                             "description":  "Theory lesson.",
+                                                             "title":  "Лекция: CSS-свойства",
+                                                             "description":  "Теория по CSS.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/demo-web-project/module-1/topic-2/task-1.md",
-                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "question_text":  "Прочитай лекцию и переходи к практике.",
+                                                             "theory_content":  "CSS управляет внешним видом элементов.\nСвойство color меняет цвет текста.\nmargin задает внешние отступы.\npadding задает внутренние отступы.",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  2,
                                                              "task_type":  "practice",
-                                                             "title":  "Practice: Text color",
-                                                             "description":  "Write short text answer.",
+                                                             "title":  "Практика: свойство цвета текста",
+                                                             "description":  "Введи короткий ответ.",
                                                              "xp_reward":  25,
                                                              "correct_answers":  "color",
                                                              "md_path":  "content/tasks/demo-web-project/module-1/topic-2/task-2.md",
-                                                             "question_text":  "Type the CSS property name used to set text color.",
+                                                             "question_text":  "Введи CSS-свойство, которое меняет цвет текста.",
+                                                             "theory_content":  "",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  3,
                                                              "task_type":  "quiz",
-                                                             "title":  "Quiz: Margin meaning",
-                                                             "description":  "Single-choice check.",
+                                                             "title":  "Квиз: назначение margin",
+                                                             "description":  "Проверка понимания темы.",
                                                              "xp_reward":  20,
-                                                             "correct_answers":  "outer spacing",
+                                                             "correct_answers":  "внешние отступы",
                                                              "md_path":  "content/tasks/demo-web-project/module-1/topic-2/task-3.md",
-                                                             "question_text":  "What does margin control?",
+                                                             "question_text":  "Что контролирует свойство margin?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "outer spacing",
-                                                                                    "font family",
-                                                                                    "image format"
+                                                                                    "внешние отступы",
+                                                                                    "семейство шрифта",
+                                                                                    "формат изображения"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          }
@@ -116,55 +122,58 @@
                     },
                     {
                         "order_index":  2,
-                        "title":  "Module 2. Project workflow",
-                        "description":  "Plan and iterate safely.",
+                        "title":  "Модуль 2. Работа над проектом",
+                        "description":  "Планирование и отладка.",
                         "topics":  [
                                        {
                                            "order_index":  1,
-                                           "title":  "Topic 3. Project planning",
-                                           "description":  "Define goal, users, and steps.",
+                                           "title":  "Тема 3. Планирование проекта",
+                                           "description":  "Цель, аудитория и шаги.",
                                            "tasks":  [
                                                          {
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
-                                                             "title":  "Lecture: Plan before build",
-                                                             "description":  "Theory lesson.",
+                                                             "title":  "Лекция: план перед реализацией",
+                                                             "description":  "Теория по планированию.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/demo-web-project/module-2/topic-1/task-1.md",
-                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "question_text":  "Прочитай лекцию и переходи к практике.",
+                                                             "theory_content":  "Любой проект начинается с цели.\nДальше определяют целевую аудиторию.\nПосле этого составляют маленькие шаги реализации.\nПошаговый план снижает риск ошибок.",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  2,
                                                              "task_type":  "practice",
-                                                             "title":  "Practice: First planning step",
-                                                             "description":  "Single-choice practice.",
+                                                             "title":  "Практика: первый шаг плана",
+                                                             "description":  "Выбери верный вариант.",
                                                              "xp_reward":  30,
-                                                             "correct_answers":  "define goal",
+                                                             "correct_answers":  "определить цель",
                                                              "md_path":  "content/tasks/demo-web-project/module-2/topic-1/task-2.md",
-                                                             "question_text":  "What should be done first in a small project?",
+                                                             "question_text":  "Что нужно сделать первым в небольшом проекте?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "define goal",
-                                                                                    "skip plan",
-                                                                                    "deploy immediately"
+                                                                                    "определить цель",
+                                                                                    "сразу деплоить",
+                                                                                    "пропустить планирование"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  3,
                                                              "task_type":  "quiz",
-                                                             "title":  "Quiz: User focus",
-                                                             "description":  "Single-choice check.",
+                                                             "title":  "Квиз: выбор полезных функций",
+                                                             "description":  "Проверка понимания темы.",
                                                              "xp_reward":  20,
-                                                             "correct_answers":  "target audience",
+                                                             "correct_answers":  "целевая аудитория",
                                                              "md_path":  "content/tasks/demo-web-project/module-2/topic-1/task-3.md",
-                                                             "question_text":  "What helps choose useful features?",
+                                                             "question_text":  "Что помогает понять, какие функции действительно нужны?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "target audience",
-                                                                                    "random ideas",
-                                                                                    "largest font"
+                                                                                    "целевая аудитория",
+                                                                                    "случайные идеи",
+                                                                                    "размер заголовка"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          }
@@ -172,46 +181,49 @@
                                        },
                                        {
                                            "order_index":  2,
-                                           "title":  "Topic 4. Debug routine",
-                                           "description":  "Fix issues step by step.",
+                                           "title":  "Тема 4. Отладка по шагам",
+                                           "description":  "Как исправлять ошибки без хаоса.",
                                            "tasks":  [
                                                          {
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
-                                                             "title":  "Lecture: Debug sequence",
-                                                             "description":  "Theory lesson.",
+                                                             "title":  "Лекция: порядок отладки",
+                                                             "description":  "Теория по отладке.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/demo-web-project/module-2/topic-2/task-1.md",
-                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "question_text":  "Прочитай лекцию и переходи к практике.",
+                                                             "theory_content":  "Отладка — это поиск причины ошибки шаг за шагом.\nСначала читают сообщение об ошибке.\nПотом проверяют проблемный участок кода.\nЛучше вносить маленькие изменения и проверять результат после каждого шага.",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  2,
                                                              "task_type":  "practice",
-                                                             "title":  "Practice: First debug action",
-                                                             "description":  "Write short text answer.",
+                                                             "title":  "Практика: первый шаг отладки",
+                                                             "description":  "Введи короткий ответ.",
                                                              "xp_reward":  30,
-                                                             "correct_answers":  "read error",
+                                                             "correct_answers":  "прочитать ошибку",
                                                              "md_path":  "content/tasks/demo-web-project/module-2/topic-2/task-2.md",
-                                                             "question_text":  "Type the first debug action in two words.",
+                                                             "question_text":  "Введи первый шаг при появлении ошибки в коде.",
+                                                             "theory_content":  "",
                                                              "answer_options":  null,
                                                              "compiler_initial_code":  ""
                                                          },
                                                          {
                                                              "order_index":  3,
                                                              "task_type":  "quiz",
-                                                             "title":  "Quiz: Safe change size",
-                                                             "description":  "Single-choice check.",
+                                                             "title":  "Квиз: безопасный стиль изменений",
+                                                             "description":  "Проверка понимания темы.",
                                                              "xp_reward":  20,
-                                                             "correct_answers":  "small changes",
+                                                             "correct_answers":  "маленькие изменения",
                                                              "md_path":  "content/tasks/demo-web-project/module-2/topic-2/task-3.md",
-                                                             "question_text":  "Which change style reduces regression risk?",
+                                                             "question_text":  "Какой стиль изменений снижает риск новых багов?",
+                                                             "theory_content":  "",
                                                              "answer_options":  [
-                                                                                    "small changes",
-                                                                                    "all-at-once rewrite",
-                                                                                    "no tests"
+                                                                                    "маленькие изменения",
+                                                                                    "полная перепись",
+                                                                                    "без проверки"
                                                                                 ],
                                                              "compiler_initial_code":  ""
                                                          }
