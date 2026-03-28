@@ -11,4 +11,4 @@
 - После завершения переходи к следующему уроку.
 
 ## Ответ (служебно)
-$task.correct_answers: ["name", "age", "city", "print"]
+$task.correct_answers: ["Лена 9 Москва"]

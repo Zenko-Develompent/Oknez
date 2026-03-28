@@ -11,4 +11,4 @@
 - После завершения переходи к следующему уроку.
 
 ## Ответ (служебно)
-$task.correct_answers: ["def", "return", "add", "sub", "mul", "div"]
+$task.correct_answers: ["5"]

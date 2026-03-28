@@ -53,7 +53,7 @@ def utc_now() -> datetime:
 
 
 def normalize_text(value: str) -> str:
-    return value.strip().lower()
+    return " ".join(value.strip().lower().split())
 
 
 def check_task_answer(task: Task, answer_body: str) -> bool:
@@ -68,26 +68,7 @@ def check_task_answer(task: Task, answer_body: str) -> bool:
 
         if isinstance(parsed, list):
             valid_answers = [normalize_text(str(item)) for item in parsed]
-            if normalized_answer in valid_answers:
-                return True
-
-            looks_like_code = (
-                "\n" in answer_body
-                or "def " in normalized_answer
-                or "if " in normalized_answer
-                or "for " in normalized_answer
-                or "while " in normalized_answer
-                or "print(" in normalized_answer
-                or "return" in normalized_answer
-                or "=" in answer_body
-            )
-
-            if looks_like_code:
-                required_matches = 1 if len(valid_answers) <= 1 else 2
-                found_matches = sum(1 for value in valid_answers if value and value in normalized_answer)
-                return found_matches >= min(required_matches, len(valid_answers))
-
-            return False
+            return normalized_answer in valid_answers
 
         if isinstance(parsed, str):
             return normalized_answer == normalize_text(parsed)

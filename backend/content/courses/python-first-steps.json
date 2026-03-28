@@ -40,7 +40,7 @@
                                                              "title":  "Практика: мини-визитка пользователя",
                                                              "description":  "Практика в компиляторе: запусти пример и заверши урок.",
                                                              "xp_reward":  30,
-                                                             "correct_answers":  "[\"name\", \"age\", \"city\", \"print\"]",
+                                                             "correct_answers":  "[\"Лена 9 Москва\"]",
                                                              "md_path":  "content/tasks/python-first-steps/module-1/topic-1/task-2.md"
                                                          },
                                                          {
@@ -74,7 +74,7 @@
                                                              "title":  "Практика: проверка возраста",
                                                              "description":  "Практика в компиляторе: запусти пример и заверши урок.",
                                                              "xp_reward":  35,
-                                                             "correct_answers":  "[\"if\", \"elif\", \"else\"]",
+                                                             "correct_answers":  "[\"Средняя группа\"]",
                                                              "md_path":  "content/tasks/python-first-steps/module-1/topic-2/task-2.md"
                                                          },
                                                          {
@@ -115,7 +115,7 @@
                                                              "title":  "Практика: таблица умножения",
                                                              "description":  "Практика в компиляторе: запусти пример и заверши урок.",
                                                              "xp_reward":  35,
-                                                             "correct_answers":  "[\"for\", \"range\", \"print\"]",
+                                                             "correct_answers":  "[\"Шаг 1 Шаг 2 Шаг 3\"]",
                                                              "md_path":  "content/tasks/python-first-steps/module-2/topic-1/task-2.md"
                                                          },
                                                          {
@@ -149,7 +149,7 @@
                                                              "title":  "Практика: калькулятор с функциями",
                                                              "description":  "Практика в компиляторе: запусти пример и заверши урок.",
                                                              "xp_reward":  40,
-                                                             "correct_answers":  "[\"def\", \"return\", \"add\", \"sub\", \"mul\", \"div\"]",
+                                                             "correct_answers":  "[\"5\"]",
                                                              "md_path":  "content/tasks/python-first-steps/module-2/topic-2/task-2.md"
                                                          },
                                                          {

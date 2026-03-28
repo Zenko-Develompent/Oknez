@@ -11,4 +11,4 @@
 - После завершения переходи к следующему уроку.
 
 ## Ответ (служебно)
-$task.correct_answers: ["for", "range", "print"]
+$task.correct_answers: ["Шаг 1 Шаг 2 Шаг 3"]

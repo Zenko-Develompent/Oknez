@@ -42,6 +42,7 @@ interface PythonCompilerProps {
   editorHeight?: number | string;
   className?: string;
   onCodeChange?: (value: string) => void;
+  onOutputChange?: (value: string) => void;
 }
 
 interface FriendlyRuntimeError {
@@ -296,11 +297,14 @@ export default function PythonCompiler({
   editorHeight = 320,
   className = "",
   onCodeChange,
+  onOutputChange,
 }: PythonCompilerProps) {
   const pyodideRef = useRef<PyodideLike | null>(null);
   const interruptBufferRef = useRef<Int32Array | null>(null);
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const monacoRef = useRef<Parameters<OnMount>[1] | null>(null);
+  const onCodeChangeRef = useRef(onCodeChange);
+  const onOutputChangeRef = useRef(onOutputChange);
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState("");
   const [friendlyError, setFriendlyError] = useState<FriendlyRuntimeError | null>(null);
@@ -310,9 +314,19 @@ export default function PythonCompiler({
   const [isStopping, setIsStopping] = useState(false);
 
   useEffect(() => {
+    onCodeChangeRef.current = onCodeChange;
+  }, [onCodeChange]);
+
+  useEffect(() => {
+    onOutputChangeRef.current = onOutputChange;
+  }, [onOutputChange]);
+
+  useEffect(() => {
     setCode(initialCode);
-    onCodeChange?.(initialCode);
-  }, [initialCode, onCodeChange]);
+    onCodeChangeRef.current?.(initialCode);
+    setOutput("");
+    onOutputChangeRef.current?.("");
+  }, [initialCode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -433,6 +447,7 @@ export default function PythonCompiler({
     setIsRunning(true);
     setIsStopping(false);
     setOutput("");
+    onOutputChange?.("");
     setFriendlyError(null);
     clearEditorMarkers();
     if (interruptBufferRef.current) {
@@ -472,7 +487,9 @@ export default function PythonCompiler({
         chunks.push(stderrBuffer.join("\n"));
       }
 
-      setOutput(chunks.length > 0 ? chunks.join("\n") : "Код выполнен, но вывода нет.");
+      const nextOutput = chunks.length > 0 ? chunks.join("\n") : "Код выполнен, но вывода нет.";
+      setOutput(nextOutput);
+      onOutputChange?.(nextOutput);
     } catch (error) {
       const parsedError = parsePythonRuntimeError(getErrorMessage(error));
       const chunks: string[] = [];
@@ -495,7 +512,9 @@ export default function PythonCompiler({
         chunks.push(`Подсказка: ошибка на строке ${parsedError.lineNumber}.`);
       }
 
-      setOutput(chunks.join("\n\n"));
+      const nextOutput = chunks.join("\n\n");
+      setOutput(nextOutput);
+      onOutputChange?.(nextOutput);
       setFriendlyError(parsedError);
 
       if (parsedError.errorType !== "KeyboardInterrupt" && parsedError.lineNumber !== null) {
@@ -517,19 +536,25 @@ export default function PythonCompiler({
 
     const interruptBuffer = interruptBufferRef.current;
     if (!interruptBuffer) {
-      setOutput((prev) =>
-        prev
+      setOutput((prev) => {
+        const nextOutput = prev
           ? `${prev}\n\nНе удалось остановить: буфер прерывания недоступен.`
-          : "Не удалось остановить: буфер прерывания недоступен."
-      );
+          : "Не удалось остановить: буфер прерывания недоступен.";
+        onOutputChange?.(nextOutput);
+        return nextOutput;
+      });
       return;
     }
 
     setIsStopping(true);
     interruptBuffer[0] = 2;
-    setOutput((prev) =>
-      prev ? `${prev}\n\nОтправляю сигнал остановки...` : "Отправляю сигнал остановки..."
-    );
+    setOutput((prev) => {
+      const nextOutput = prev
+        ? `${prev}\n\nОтправляю сигнал остановки...`
+        : "Отправляю сигнал остановки...";
+      onOutputChange?.(nextOutput);
+      return nextOutput;
+    });
   };
 
   const isRunDisabled = isRuntimeLoading || !!runtimeError || isRunning;

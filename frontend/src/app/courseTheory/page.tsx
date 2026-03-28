@@ -93,7 +93,7 @@ function CourseTheoryPageContent() {
   const [selectedOptionByTaskId, setSelectedOptionByTaskId] = useState<Record<number, string>>(
     {}
   );
-  const [compilerCodeByTaskId, setCompilerCodeByTaskId] = useState<Record<number, string>>({});
+  const [compilerOutputByTaskId, setCompilerOutputByTaskId] = useState<Record<number, string>>({});
   const [progressPercent, setProgressPercent] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
@@ -137,7 +137,7 @@ function CourseTheoryPageContent() {
         setSessionCompletedIds([]);
         setViewedLectureIds([]);
         setSelectedOptionByTaskId({});
-        setCompilerCodeByTaskId({});
+        setCompilerOutputByTaskId({});
         setSelectedLessonId("");
         setMessage("");
       } catch (error) {
@@ -350,16 +350,15 @@ function CourseTheoryPageContent() {
       return;
     }
 
-    const code =
-      compilerCodeByTaskId[activeLesson.id] ?? lessonEnhancement.compilerInitialCode ?? "";
-    if (!code.trim()) {
-      handleWrongLesson("Добавь код перед проверкой.");
+    const compilerOutput = compilerOutputByTaskId[activeLesson.id] ?? "";
+    if (!compilerOutput.trim()) {
+      handleWrongLesson("Сначала запусти код и получи вывод программы.");
       return;
     }
 
     try {
       setIsSubmitting(true);
-      const response = await submitTaskAnswer(activeLesson.id, code);
+      const response = await submitTaskAnswer(activeLesson.id, compilerOutput);
 
       if (!response.is_correct) {
         handleWrongLesson("Код пока не прошёл проверку. Попробуй доработать решение.");
@@ -616,10 +615,10 @@ function CourseTheoryPageContent() {
                 <PythonCompiler
                   title={lessonEnhancement.compilerTitle}
                   initialCode={lessonEnhancement.compilerInitialCode}
-                  onCodeChange={(code) =>
-                    setCompilerCodeByTaskId((prev) => ({
+                  onOutputChange={(output) =>
+                    setCompilerOutputByTaskId((prev) => ({
                       ...prev,
-                      [activeLesson.id]: code,
+                      [activeLesson.id]: output,
                     }))
                   }
                 />
