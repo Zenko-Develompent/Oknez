@@ -10,16 +10,9 @@
 *   **Безопасность**: Хеширование паролей и контроль доступа <img src="frontend/src/shared/assets/images/thirdplace.png" alt="Описание" width="25" height="25">
 
 ## 🚀 Запуск проекта
+Для запуска проекта на компьютере должен быть установлен git, docker и docker-compose
 
-Выполните следующие команды в терминале для настройки окружения и запуска сервисов:
-
-### 1. Подготовка системы и установка зависимостей
-#### Установка git и docker (Если их вдруг нет на компьютере) для Linux
-```bash
-sudo apt update && sudo apt install -y git docker.io docker-compose
-```
-
-### 2. Клонирование репозитория
+### 1. Клонирование репозитория
 #### Клонируйте репозиторий (можете скопировать ссылку в правом углу)
 ```bash
 git clone https://github.com/Zenko-Develompent/fivneosi343f
@@ -27,13 +20,13 @@ cd fivneosi343f
 git checkout backupfront
 ```
 
-### 3. Подготовка переменных окружения
+### 2. Подготовка переменных окружения
 #### Для безопасности в репозитории есть только .env.example. Его нужно скопировать в файл окружения .env
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-### 4. Запуск проекта
+### 3. Запуск проекта
 #### Для запуска используется docker-compose и файл docker-compose.yml в корне проекта
 ```bash
 docker compose up -d
