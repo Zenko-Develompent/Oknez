@@ -29,7 +29,7 @@
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
                                                              "title":  "Лекция: сильные пароли и менеджеры паролей",
-                                                             "description":  "Мини-игра на запоминание главных правил безопасности.",
+                                                             "description":  "Теоретический материал: как создавать сильные пароли и пользоваться менеджерами паролей.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/digital-safety-and-media-literacy/module-1/topic-1/task-1.md"
@@ -38,7 +38,7 @@
                                                              "order_index":  2,
                                                              "task_type":  "practice",
                                                              "title":  "Практика: аудит своих паролей по чеклисту",
-                                                             "description":  "Мини-игра по теме: пройди игру и заверши урок.",
+                                                             "description":  "Практика в формате квиза: выбери верные пункты чек-листа безопасного пароля.",
                                                              "xp_reward":  30,
                                                              "correct_answers":  "[\"длина не менее 12\", \"уникальный пароль\", \"2fa\"]",
                                                              "md_path":  "content/tasks/digital-safety-and-media-literacy/module-1/topic-1/task-2.md"
@@ -63,7 +63,7 @@
                                                              "order_index":  1,
                                                              "task_type":  "lecture",
                                                              "title":  "Лекция: признаки фишинга",
-                                                             "description":  "Мини-игра на запоминание главных правил безопасности.",
+                                                             "description":  "Теоретический материал: как распознавать фишинговые письма и подозрительные ссылки.",
                                                              "xp_reward":  0,
                                                              "correct_answers":  null,
                                                              "md_path":  "content/tasks/digital-safety-and-media-literacy/module-1/topic-2/task-1.md"
@@ -72,7 +72,7 @@
                                                              "order_index":  2,
                                                              "task_type":  "practice",
                                                              "title":  "Практика: разбор 5 подозрительных сообщений",
-                                                             "description":  "Мини-игра по теме: пройди игру и заверши урок.",
+                                                             "description":  "Практика в формате квиза: определи, какие сообщения и действия безопасны.",
                                                              "xp_reward":  35,
                                                              "correct_answers":  "[\"проверка домена\", \"не передавать коды\", \"не открывать подозрительные ссылки\"]",
                                                              "md_path":  "content/tasks/digital-safety-and-media-literacy/module-1/topic-2/task-2.md"

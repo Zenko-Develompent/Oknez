@@ -111,8 +111,8 @@ function CourseTheoryPageContent() {
       try {
         setIsLoading(true);
         setErrorMessage("");
-        const response = await getCourseTree(courseId);
 
+        const response = await getCourseTree(courseId);
         if (cancelled) {
           return;
         }
@@ -120,6 +120,7 @@ function CourseTheoryPageContent() {
         setCourseTree(response);
         setProgressPercent(response.progress_percent ?? 0);
         setSessionCompletedIds([]);
+        setViewedLectureIds([]);
         setSelectedOptionByTaskId({});
         setSelectedLessonId("");
         setMessage("");
@@ -149,22 +150,23 @@ function CourseTheoryPageContent() {
   }, [courseId, router]);
 
   const sessionCompletedSet = useMemo(() => new Set(sessionCompletedIds), [sessionCompletedIds]);
+  const viewedLectureSet = useMemo(() => new Set(viewedLectureIds), [viewedLectureIds]);
 
   const unlockedByLessonId = useMemo(() => {
     const unlocked = new Map<string, boolean>();
-    const isCompleted = (item: FlatLessonRef): boolean =>
-      item.lesson.task_type === "lecture" || sessionCompletedSet.has(item.lesson.id);
+
+    const isDone = (item: FlatLessonRef): boolean =>
+      item.lesson.task_type === "lecture"
+        ? viewedLectureSet.has(item.lesson.id)
+        : sessionCompletedSet.has(item.lesson.id);
+
     const allRequiredBeforeFinalDone = lessons
-      .filter((item) => item.lesson.task_type !== "lecture" && !item.isFinal)
-      .every((item) => sessionCompletedSet.has(item.lesson.id));
+      .filter((item) => !item.isFinal)
+      .every((item) => isDone(item));
 
     for (const [index, item] of lessons.entries()) {
-      const requiredBeforeDone = lessons
-        .slice(0, index)
-        .filter((prev) => prev.lesson.task_type !== "lecture")
-        .every((prev) => isCompleted(prev));
-
-      let isUnlocked = index === 0 || requiredBeforeDone || isCompleted(item);
+      const requiredBeforeDone = lessons.slice(0, index).every((prev) => isDone(prev));
+      let isUnlocked = index === 0 || requiredBeforeDone || isDone(item);
 
       if (item.isFinal && !allRequiredBeforeFinalDone && !sessionCompletedSet.has(item.lesson.id)) {
         isUnlocked = false;
@@ -174,7 +176,7 @@ function CourseTheoryPageContent() {
     }
 
     return unlocked;
-  }, [lessons, sessionCompletedSet]);
+  }, [lessons, sessionCompletedSet, viewedLectureSet]);
 
   useEffect(() => {
     if (lessons.length === 0) {
@@ -205,6 +207,14 @@ function CourseTheoryPageContent() {
     ? Boolean(unlockedByLessonId.get(String(activeLesson.id)))
     : false;
 
+  useEffect(() => {
+    if (!activeLesson || !isActiveUnlocked || activeLesson.task_type !== "lecture") {
+      return;
+    }
+
+    setViewedLectureIds((prev) => (prev.includes(activeLesson.id) ? prev : [...prev, activeLesson.id]));
+  }, [activeLesson, isActiveUnlocked]);
+
   const activeThemeLessons = useMemo(() => {
     if (!activeThemeId) {
       return [];
@@ -218,9 +228,7 @@ function CourseTheoryPageContent() {
       return 1;
     }
 
-    const index = activeThemeLessons.findIndex(
-      (item) => item.lesson.id === currentLessonRef.lesson.id
-    );
+    const index = activeThemeLessons.findIndex((item) => item.lesson.id === currentLessonRef.lesson.id);
     return index >= 0 ? index + 1 : 1;
   }, [activeThemeLessons, currentLessonRef]);
 
@@ -343,9 +351,7 @@ function CourseTheoryPageContent() {
 
   const handleThemeSelect = (themeId: string) => {
     const themeLessons = lessons.filter((item) => item.themeId === themeId);
-    const firstUnlocked = themeLessons.find((item) =>
-      unlockedByLessonId.get(String(item.lesson.id))
-    );
+    const firstUnlocked = themeLessons.find((item) => unlockedByLessonId.get(String(item.lesson.id)));
 
     if (!firstUnlocked) {
       handleWrongLesson("Тема пока заблокирована.");
@@ -426,7 +432,10 @@ function CourseTheoryPageContent() {
   }
 
   const isCompleted =
-    activeLesson.task_type === "lecture" || sessionCompletedSet.has(activeLesson.id);
+    activeLesson.task_type === "lecture"
+      ? viewedLectureSet.has(activeLesson.id)
+      : sessionCompletedSet.has(activeLesson.id);
+
   const messageClass =
     messageTone === "success"
       ? styles.messageSuccess
@@ -467,6 +476,7 @@ function CourseTheoryPageContent() {
                 if (!firstTask) {
                   return false;
                 }
+
                 return !unlockedByLessonId.get(String(firstTask.id));
               })(),
               lessons: theme.tasks.map((lesson) => ({
@@ -520,6 +530,15 @@ function CourseTheoryPageContent() {
           </div>
 
           <div className={styles.practiceStack}>
+            {lessonEnhancement.interactionType === "theory" && (
+              <section className={styles.quizBlock}>
+                <h2 className={styles.quizTitle}>Теория</h2>
+                <p className={styles.quizSummary}>
+                  Прочитай материал урока. После лекции переходи к практике и квизам.
+                </p>
+              </section>
+            )}
+
             {lessonEnhancement.interactionType === "singleQuestion" &&
               lessonEnhancement.singleQuestion && (
                 <section className={styles.quizBlock}>
@@ -603,9 +622,15 @@ function CourseTheoryPageContent() {
                 <PythonCompiler
                   title={lessonEnhancement.compilerTitle}
                   initialCode={lessonEnhancement.compilerInitialCode}
+                  onCodeChange={(code) =>
+                    setCompilerCodeByTaskId((prev) => ({
+                      ...prev,
+                      [activeLesson.id]: code,
+                    }))
+                  }
                 />
 
-                {showCompleteButton && (
+                {showCompilerCheckButton && (
                   <div className={styles.activityActions}>
                     <Button
                       size="m"
