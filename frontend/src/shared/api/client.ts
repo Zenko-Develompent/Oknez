@@ -162,6 +162,9 @@ export interface TaskTreePublic {
   title: string;
   description: string | null;
   task_type: TaskType;
+  question_text: string | null;
+  answer_options: string | null;
+  compiler_initial_code: string | null;
   order_index: number;
   xp_reward: number;
   is_published: boolean;

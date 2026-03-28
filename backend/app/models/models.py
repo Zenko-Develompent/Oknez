@@ -182,6 +182,9 @@ class Task(SQLModel, table=True):
     order_index: int = Field(default=1, ge=1, index=True)
     md_path: Optional[str] = Field(default=None, max_length=500)
     correct_answers: Optional[str] = Field(default=None, max_length=2000)
+    question_text: Optional[str] = Field(default=None, max_length=2000)
+    answer_options: Optional[str] = Field(default=None, max_length=8000)
+    compiler_initial_code: Optional[str] = Field(default=None, max_length=8000)
     xp_reward: int = Field(default=0, ge=0)
     is_published: bool = Field(default=False)
 

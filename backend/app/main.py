@@ -3,13 +3,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlmodel import Session, select
 
 from app.api.routes import achievements, rating, task
 from app.api.routes.courses import router as courses_router
 from app.api.routes.users import router as users_router
-from app.core.db import create_db_and_tables, engine
-from app.models.models import Course
+from app.core.db import create_db_and_tables
 from app.scripts.import_courses_from_content import import_all_courses
 
 
@@ -23,17 +21,13 @@ async def lifespan(app: FastAPI):
         "yes",
     }
     if auto_import_enabled:
-        with Session(engine) as session:
-            has_courses = session.exec(select(Course.id).limit(1)).first() is not None
-
-        if not has_courses:
-            totals = import_all_courses()
-            print(
-                "AUTO_IMPORT_COURSES_ON_STARTUP: "
-                f"files={totals['files']}, courses={totals['courses']}, "
-                f"modules={totals['modules']}, topics={totals['topics']}, "
-                f"tasks={totals['tasks']}"
-            )
+        totals = import_all_courses()
+        print(
+            "AUTO_IMPORT_COURSES_ON_STARTUP: "
+            f"files={totals['files']}, courses={totals['courses']}, "
+            f"modules={totals['modules']}, topics={totals['topics']}, "
+            f"tasks={totals['tasks']}"
+        )
 
     print("SERVER_STARTUP_COMPLETE")
     yield

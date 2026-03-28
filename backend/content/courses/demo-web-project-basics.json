@@ -1,0 +1,223 @@
+{
+    "schema_version":  "1.0",
+    "category_title":  "Creative Technology",
+    "course":  {
+                   "title":  "Demo Course: Web and Project Basics",
+                   "description":  "Starter course about web structure and project thinking.",
+                   "audience":  "Beginner",
+                   "outcomes":  [
+                                    "Understand HTML and CSS basics",
+                                    "Plan simple projects",
+                                    "Use structured debugging steps"
+                                ],
+                   "is_published":  true
+               },
+    "modules":  [
+                    {
+                        "order_index":  1,
+                        "title":  "Module 1. Web basics",
+                        "description":  "Understand page structure and style.",
+                        "topics":  [
+                                       {
+                                           "order_index":  1,
+                                           "title":  "Topic 1. HTML ideas",
+                                           "description":  "Tags and page blocks.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: HTML structure",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-web-project/module-1/topic-1/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Heading tag",
+                                                             "description":  "Write short text answer.",
+                                                             "xp_reward":  25,
+                                                             "correct_answers":  "h1",
+                                                             "md_path":  "content/tasks/demo-web-project/module-1/topic-1/task-2.md",
+                                                             "question_text":  "Type only the tag name used for the main page heading.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Link tag",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "a",
+                                                             "md_path":  "content/tasks/demo-web-project/module-1/topic-1/task-3.md",
+                                                             "question_text":  "Which HTML tag creates a clickable link?",
+                                                             "answer_options":  [
+                                                                                    "a",
+                                                                                    "div",
+                                                                                    "span"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       },
+                                       {
+                                           "order_index":  2,
+                                           "title":  "Topic 2. CSS ideas",
+                                           "description":  "Colors and spacing.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: CSS properties",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-web-project/module-1/topic-2/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Text color",
+                                                             "description":  "Write short text answer.",
+                                                             "xp_reward":  25,
+                                                             "correct_answers":  "color",
+                                                             "md_path":  "content/tasks/demo-web-project/module-1/topic-2/task-2.md",
+                                                             "question_text":  "Type the CSS property name used to set text color.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Margin meaning",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "outer spacing",
+                                                             "md_path":  "content/tasks/demo-web-project/module-1/topic-2/task-3.md",
+                                                             "question_text":  "What does margin control?",
+                                                             "answer_options":  [
+                                                                                    "outer spacing",
+                                                                                    "font family",
+                                                                                    "image format"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       }
+                                   ]
+                    },
+                    {
+                        "order_index":  2,
+                        "title":  "Module 2. Project workflow",
+                        "description":  "Plan and iterate safely.",
+                        "topics":  [
+                                       {
+                                           "order_index":  1,
+                                           "title":  "Topic 3. Project planning",
+                                           "description":  "Define goal, users, and steps.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: Plan before build",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-web-project/module-2/topic-1/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: First planning step",
+                                                             "description":  "Single-choice practice.",
+                                                             "xp_reward":  30,
+                                                             "correct_answers":  "define goal",
+                                                             "md_path":  "content/tasks/demo-web-project/module-2/topic-1/task-2.md",
+                                                             "question_text":  "What should be done first in a small project?",
+                                                             "answer_options":  [
+                                                                                    "define goal",
+                                                                                    "skip plan",
+                                                                                    "deploy immediately"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: User focus",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "target audience",
+                                                             "md_path":  "content/tasks/demo-web-project/module-2/topic-1/task-3.md",
+                                                             "question_text":  "What helps choose useful features?",
+                                                             "answer_options":  [
+                                                                                    "target audience",
+                                                                                    "random ideas",
+                                                                                    "largest font"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       },
+                                       {
+                                           "order_index":  2,
+                                           "title":  "Topic 4. Debug routine",
+                                           "description":  "Fix issues step by step.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: Debug sequence",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-web-project/module-2/topic-2/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: First debug action",
+                                                             "description":  "Write short text answer.",
+                                                             "xp_reward":  30,
+                                                             "correct_answers":  "read error",
+                                                             "md_path":  "content/tasks/demo-web-project/module-2/topic-2/task-2.md",
+                                                             "question_text":  "Type the first debug action in two words.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Safe change size",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "small changes",
+                                                             "md_path":  "content/tasks/demo-web-project/module-2/topic-2/task-3.md",
+                                                             "question_text":  "Which change style reduces regression risk?",
+                                                             "answer_options":  [
+                                                                                    "small changes",
+                                                                                    "all-at-once rewrite",
+                                                                                    "no tests"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       }
+                                   ]
+                    }
+                ]
+}

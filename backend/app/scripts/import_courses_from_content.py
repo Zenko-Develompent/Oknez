@@ -22,6 +22,33 @@ def normalize_correct_answers(raw_value: Any) -> str | None:
     return json.dumps(raw_value, ensure_ascii=False)
 
 
+def normalize_answer_options(raw_value: Any) -> str | None:
+    if raw_value is None:
+        return None
+
+    if isinstance(raw_value, str):
+        normalized = raw_value.strip()
+        if not normalized:
+            return None
+        return normalized
+
+    if isinstance(raw_value, list):
+        options = [str(item).strip() for item in raw_value if str(item).strip()]
+        if not options:
+            return None
+        return json.dumps(options, ensure_ascii=False)
+
+    return json.dumps(raw_value, ensure_ascii=False)
+
+
+def normalize_optional_text(raw_value: Any) -> str | None:
+    if raw_value is None:
+        return None
+
+    value = str(raw_value).strip()
+    return value if value else None
+
+
 def get_or_create_category(session: Session, title: str) -> CourseCategory:
     category = session.exec(
         select(CourseCategory).where(CourseCategory.title == title)
@@ -133,6 +160,9 @@ def get_or_create_task(
     task_type: TaskType,
     order_index: int,
     correct_answers: str | None,
+    question_text: str | None,
+    answer_options: str | None,
+    compiler_initial_code: str | None,
     xp_reward: int,
     md_path: str | None,
     is_published: bool,
@@ -149,6 +179,9 @@ def get_or_create_task(
             task_type=task_type,
             order_index=order_index,
             correct_answers=correct_answers,
+            question_text=question_text,
+            answer_options=answer_options,
+            compiler_initial_code=compiler_initial_code,
             xp_reward=xp_reward,
             md_path=md_path,
             is_published=is_published,
@@ -159,6 +192,9 @@ def get_or_create_task(
     task.task_type = task_type
     task.order_index = order_index
     task.correct_answers = correct_answers
+    task.question_text = question_text
+    task.answer_options = answer_options
+    task.compiler_initial_code = compiler_initial_code
     task.xp_reward = xp_reward
     task.md_path = md_path
     task.is_published = is_published
@@ -227,6 +263,13 @@ def import_course_file(session: Session, file_path: Path) -> dict[str, int]:
                     correct_answers=normalize_correct_answers(
                         task_payload.get("correct_answers")
                     ),
+                    question_text=normalize_optional_text(task_payload.get("question_text")),
+                    answer_options=normalize_answer_options(
+                        task_payload.get("answer_options")
+                    ),
+                    compiler_initial_code=normalize_optional_text(
+                        task_payload.get("compiler_initial_code")
+                    ),
                     xp_reward=int(task_payload.get("xp_reward", 0)),
                     md_path=task_payload.get("md_path"),
                     is_published=bool(task_payload.get("is_published", True)),
@@ -241,6 +284,15 @@ def import_all_courses(content_dir: Path = CONTENT_DIR) -> dict[str, int]:
     if not files:
         raise FileNotFoundError(f"No course files found in: {content_dir}")
 
+    declared_course_titles: set[str] = set()
+    for file_path in files:
+        with file_path.open("r", encoding="utf-8") as file:
+            payload = json.load(file)
+        course_payload = payload.get("course") or {}
+        title = str(course_payload.get("title") or "").strip()
+        if title:
+            declared_course_titles.add(title)
+
     totals = {
         "files": 0,
         "courses": 0,
@@ -252,6 +304,14 @@ def import_all_courses(content_dir: Path = CONTENT_DIR) -> dict[str, int]:
     create_db_and_tables()
 
     with Session(engine) as session:
+        if declared_course_titles:
+            existing_courses = session.exec(select(Course)).all()
+            for existing_course in existing_courses:
+                if existing_course.title not in declared_course_titles and existing_course.is_published:
+                    existing_course.is_published = False
+                    session.add(existing_course)
+            session.commit()
+
         for file_path in files:
             stats = import_course_file(session, file_path)
             totals["files"] += 1

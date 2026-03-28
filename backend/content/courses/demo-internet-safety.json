@@ -1,0 +1,235 @@
+{
+    "schema_version":  "1.0",
+    "category_title":  "Digital Literacy",
+    "course":  {
+                   "title":  "Demo Course: Internet Safety",
+                   "description":  "Practical online safety course for beginners.",
+                   "audience":  "Beginner",
+                   "outcomes":  [
+                                    "Protect accounts",
+                                    "Detect phishing",
+                                    "Check sources and privacy settings"
+                                ],
+                   "is_published":  true
+               },
+    "modules":  [
+                    {
+                        "order_index":  1,
+                        "title":  "Module 1. Safe accounts",
+                        "description":  "Protect account access.",
+                        "topics":  [
+                                       {
+                                           "order_index":  1,
+                                           "title":  "Topic 1. Password rules",
+                                           "description":  "Strong password basics.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: Strong passwords",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-1/topic-1/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Secure login checklist",
+                                                             "description":  "Single-choice practice.",
+                                                             "xp_reward":  30,
+                                                             "correct_answers":  "2fa",
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-1/topic-1/task-2.md",
+                                                             "question_text":  "What should always be enabled on important accounts?",
+                                                             "answer_options":  [
+                                                                                    "2fa",
+                                                                                    "same password everywhere",
+                                                                                    "share password with friends"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Password quality",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "unique password",
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-1/topic-1/task-3.md",
+                                                             "question_text":  "What is a good password habit?",
+                                                             "answer_options":  [
+                                                                                    "unique password",
+                                                                                    "short password",
+                                                                                    "public password note"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       },
+                                       {
+                                           "order_index":  2,
+                                           "title":  "Topic 2. Phishing",
+                                           "description":  "Spot suspicious messages.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: Phishing signals",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-1/topic-2/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Suspicious email",
+                                                             "description":  "Single-choice practice.",
+                                                             "xp_reward":  35,
+                                                             "correct_answers":  "check domain",
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-1/topic-2/task-2.md",
+                                                             "question_text":  "What is the safest first action with suspicious email?",
+                                                             "answer_options":  [
+                                                                                    "check domain",
+                                                                                    "open attachment",
+                                                                                    "enter password"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Secret data",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "never share password",
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-1/topic-2/task-3.md",
+                                                             "question_text":  "What data should never be shared in chat?",
+                                                             "answer_options":  [
+                                                                                    "never share password",
+                                                                                    "favorite color",
+                                                                                    "game nickname"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       }
+                                   ]
+                    },
+                    {
+                        "order_index":  2,
+                        "title":  "Module 2. Smart browsing",
+                        "description":  "Verify information and privacy.",
+                        "topics":  [
+                                       {
+                                           "order_index":  1,
+                                           "title":  "Topic 3. Fact-checking",
+                                           "description":  "Validate online claims.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: Source verification",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-2/topic-1/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: News check",
+                                                             "description":  "Single-choice practice.",
+                                                             "xp_reward":  35,
+                                                             "correct_answers":  "primary source",
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-2/topic-1/task-2.md",
+                                                             "question_text":  "Where should fact-checking start?",
+                                                             "answer_options":  [
+                                                                                    "primary source",
+                                                                                    "social repost",
+                                                                                    "clickbait title"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Reliable evidence",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "publication date",
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-2/topic-1/task-3.md",
+                                                             "question_text":  "Which detail helps verify a claim?",
+                                                             "answer_options":  [
+                                                                                    "publication date",
+                                                                                    "emoji count",
+                                                                                    "font color"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       },
+                                       {
+                                           "order_index":  2,
+                                           "title":  "Topic 4. Privacy settings",
+                                           "description":  "Protect personal data online.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: Privacy basics",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-2/topic-2/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Profile visibility",
+                                                             "description":  "Single-choice practice.",
+                                                             "xp_reward":  40,
+                                                             "correct_answers":  "limit profile visibility",
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-2/topic-2/task-2.md",
+                                                             "question_text":  "Which action improves account privacy?",
+                                                             "answer_options":  [
+                                                                                    "limit profile visibility",
+                                                                                    "make everything public",
+                                                                                    "disable updates forever"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Privacy term",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  25,
+                                                             "correct_answers":  "privacy",
+                                                             "md_path":  "content/tasks/demo-internet-safety/module-2/topic-2/task-3.md",
+                                                             "question_text":  "Which word means personal data protection?",
+                                                             "answer_options":  [
+                                                                                    "privacy",
+                                                                                    "publicity",
+                                                                                    "virality"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       }
+                                   ]
+                    }
+                ]
+}

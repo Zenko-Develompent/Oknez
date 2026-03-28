@@ -55,6 +55,9 @@ class TaskTreePublic(SQLModel):
     title: str
     description: str | None = None
     task_type: TaskType
+    question_text: str | None = None
+    answer_options: str | None = None
+    compiler_initial_code: str | None = None
     order_index: int
     xp_reward: int
     is_published: bool
@@ -348,6 +351,9 @@ def get_course_tree(
                             title=task.title,
                             description=task.description,
                             task_type=task.task_type,
+                            question_text=task.question_text,
+                            answer_options=task.answer_options,
+                            compiler_initial_code=task.compiler_initial_code,
                             order_index=task.order_index,
                             xp_reward=task.xp_reward,
                             is_published=task.is_published,

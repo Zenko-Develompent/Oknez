@@ -1,0 +1,219 @@
+{
+    "schema_version":  "1.0",
+    "category_title":  "Programming",
+    "course":  {
+                   "title":  "Demo Course: Python Starters",
+                   "description":  "Hands-on starter course for beginner Python learners.",
+                   "audience":  "Beginner",
+                   "outcomes":  [
+                                    "Use print and variables",
+                                    "Write simple loops",
+                                    "Create functions with return"
+                                ],
+                   "is_published":  true
+               },
+    "modules":  [
+                    {
+                        "order_index":  1,
+                        "title":  "Module 1. Core Python",
+                        "description":  "First coding steps.",
+                        "topics":  [
+                                       {
+                                           "order_index":  1,
+                                           "title":  "Topic 1. Variables and Output",
+                                           "description":  "Store values and print them.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: Variables and print",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-python-starters/module-1/topic-1/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Profile line",
+                                                             "description":  "Run code and validate output.",
+                                                             "xp_reward":  30,
+                                                             "correct_answers":  "[\"Mia 10 Berlin\"]",
+                                                             "md_path":  "content/tasks/demo-python-starters/module-1/topic-1/task-2.md",
+                                                             "question_text":  "Run the code and get output: Mia 10 Berlin",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  "name = \u0027Mia\u0027\nage = 10\ncity = \u0027Berlin\u0027\nprint(name, age, city)"
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Text type",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "str",
+                                                             "md_path":  "content/tasks/demo-python-starters/module-1/topic-1/task-3.md",
+                                                             "question_text":  "Which Python type stores text?",
+                                                             "answer_options":  [
+                                                                                    "str",
+                                                                                    "int",
+                                                                                    "bool"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       },
+                                       {
+                                           "order_index":  2,
+                                           "title":  "Topic 2. Loops",
+                                           "description":  "Repeat actions with loops.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: for and range",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-python-starters/module-1/topic-2/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Step counter",
+                                                             "description":  "Run code and validate output.",
+                                                             "xp_reward":  35,
+                                                             "correct_answers":  "[\"Step 1 Step 2 Step 3\"]",
+                                                             "md_path":  "content/tasks/demo-python-starters/module-1/topic-2/task-2.md",
+                                                             "question_text":  "Run the code and get output: Step 1 Step 2 Step 3",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  "for i in range(1, 4):\n    print(\u0027Step\u0027, i)"
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Loop keyword",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  20,
+                                                             "correct_answers":  "for",
+                                                             "md_path":  "content/tasks/demo-python-starters/module-1/topic-2/task-3.md",
+                                                             "question_text":  "Which keyword starts a counted loop?",
+                                                             "answer_options":  [
+                                                                                    "for",
+                                                                                    "if",
+                                                                                    "def"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       }
+                                   ]
+                    },
+                    {
+                        "order_index":  2,
+                        "title":  "Module 2. Functions",
+                        "description":  "Build reusable code.",
+                        "topics":  [
+                                       {
+                                           "order_index":  1,
+                                           "title":  "Topic 3. Function basics",
+                                           "description":  "Define functions and return values.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: def and return",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-python-starters/module-2/topic-1/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Add two numbers",
+                                                             "description":  "Run code and validate output.",
+                                                             "xp_reward":  40,
+                                                             "correct_answers":  "[\"8\"]",
+                                                             "md_path":  "content/tasks/demo-python-starters/module-2/topic-1/task-2.md",
+                                                             "question_text":  "Run the code and get output: 8",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  "def add(a, b):\n    return a + b\n\nprint(add(3, 5))"
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Function result",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  25,
+                                                             "correct_answers":  "return",
+                                                             "md_path":  "content/tasks/demo-python-starters/module-2/topic-1/task-3.md",
+                                                             "question_text":  "Which keyword returns a function value?",
+                                                             "answer_options":  [
+                                                                                    "return",
+                                                                                    "input",
+                                                                                    "class"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       },
+                                       {
+                                           "order_index":  2,
+                                           "title":  "Topic 4. Final practice",
+                                           "description":  "Small final coding practice.",
+                                           "tasks":  [
+                                                         {
+                                                             "order_index":  1,
+                                                             "task_type":  "lecture",
+                                                             "title":  "Lecture: Read code carefully",
+                                                             "description":  "Theory lesson.",
+                                                             "xp_reward":  0,
+                                                             "correct_answers":  null,
+                                                             "md_path":  "content/tasks/demo-python-starters/module-2/topic-2/task-1.md",
+                                                             "question_text":  "Read the lecture and move to practice.",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  ""
+                                                         },
+                                                         {
+                                                             "order_index":  2,
+                                                             "task_type":  "practice",
+                                                             "title":  "Practice: Final output",
+                                                             "description":  "Run code and validate output.",
+                                                             "xp_reward":  45,
+                                                             "correct_answers":  "[\"Ready\"]",
+                                                             "md_path":  "content/tasks/demo-python-starters/module-2/topic-2/task-2.md",
+                                                             "question_text":  "Run the code and get output: Ready",
+                                                             "answer_options":  null,
+                                                             "compiler_initial_code":  "status = \u0027Ready\u0027\nprint(status)"
+                                                         },
+                                                         {
+                                                             "order_index":  3,
+                                                             "task_type":  "quiz",
+                                                             "title":  "Quiz: Debug habit",
+                                                             "description":  "Single-choice check.",
+                                                             "xp_reward":  25,
+                                                             "correct_answers":  "read the error",
+                                                             "md_path":  "content/tasks/demo-python-starters/module-2/topic-2/task-3.md",
+                                                             "question_text":  "What is the first debugging step?",
+                                                             "answer_options":  [
+                                                                                    "read the error",
+                                                                                    "rewrite all code",
+                                                                                    "guess randomly"
+                                                                                ],
+                                                             "compiler_initial_code":  ""
+                                                         }
+                                                     ]
+                                       }
+                                   ]
+                    }
+                ]
+}

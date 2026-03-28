@@ -16,7 +16,6 @@ import {
   submitTaskAnswer,
 } from "@/shared/api/client";
 import { getAccessToken } from "@/shared/auth/tokens";
-import { getLessonEnhancement } from "./lessonEnhancements";
 import styles from "./course.module.css";
 
 interface FlatLessonRef {
@@ -30,6 +29,94 @@ interface FlatLessonRef {
 }
 
 type MessageTone = "default" | "success" | "error";
+type LessonInteractionType = "theory" | "singleQuestion" | "compiler" | "textAnswer";
+
+interface LessonOption {
+  id: string;
+  label: string;
+}
+
+interface LessonInteraction {
+  interactionType: LessonInteractionType;
+  prompt: string;
+  options: LessonOption[];
+  compilerTitle: string;
+  compilerInitialCode: string;
+}
+
+function parseAnswerOptions(raw: string | null | undefined): string[] {
+  if (!raw) {
+    return [];
+  }
+
+  const normalized = raw.trim();
+  if (!normalized) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(normalized);
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map((item) => String(item).trim())
+        .filter((item) => item.length > 0);
+    }
+  } catch {
+    return [];
+  }
+
+  return [];
+}
+
+function resolveLessonInteraction(lesson: TaskTreePublic): LessonInteraction {
+  const prompt =
+    lesson.question_text?.trim() ||
+    lesson.description?.trim() ||
+    "Ответь на вопрос по материалу урока.";
+
+  const options = parseAnswerOptions(lesson.answer_options).map((label, index) => ({
+    id: String(index + 1),
+    label,
+  }));
+
+  if (lesson.task_type === "lecture") {
+    return {
+      interactionType: "theory",
+      prompt,
+      options: [],
+      compilerTitle: "Практика написания кода",
+      compilerInitialCode: "",
+    };
+  }
+
+  if (lesson.compiler_initial_code?.trim()) {
+    return {
+      interactionType: "compiler",
+      prompt,
+      options: [],
+      compilerTitle: lesson.question_text?.trim() || "Практика написания кода",
+      compilerInitialCode: lesson.compiler_initial_code,
+    };
+  }
+
+  if (options.length > 0) {
+    return {
+      interactionType: "singleQuestion",
+      prompt,
+      options,
+      compilerTitle: "Практика написания кода",
+      compilerInitialCode: "",
+    };
+  }
+
+  return {
+    interactionType: "textAnswer",
+    prompt,
+    options: [],
+    compilerTitle: "Практика написания кода",
+    compilerInitialCode: "",
+  };
+}
 
 function isFinalTask(task: TaskTreePublic): boolean {
   const source = `${task.title} ${task.description ?? ""}`.toLowerCase();
@@ -93,6 +180,7 @@ function CourseTheoryPageContent() {
   const [selectedOptionByTaskId, setSelectedOptionByTaskId] = useState<Record<number, string>>(
     {}
   );
+  const [textAnswerByTaskId, setTextAnswerByTaskId] = useState<Record<number, string>>({});
   const [compilerOutputByTaskId, setCompilerOutputByTaskId] = useState<Record<number, string>>({});
   const [progressPercent, setProgressPercent] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -137,6 +225,7 @@ function CourseTheoryPageContent() {
         setSessionCompletedIds([]);
         setViewedLectureIds([]);
         setSelectedOptionByTaskId({});
+        setTextAnswerByTaskId({});
         setCompilerOutputByTaskId({});
         setSelectedLessonId("");
         setMessage("");
@@ -248,13 +337,13 @@ function CourseTheoryPageContent() {
     return index >= 0 ? index + 1 : 1;
   }, [activeThemeLessons, currentLessonRef]);
 
-  const lessonEnhancement = useMemo(() => {
+  const lessonInteraction = useMemo(() => {
     if (!activeLesson) {
       return null;
     }
 
-    return getLessonEnhancement(courseTree?.category?.title, activeLesson);
-  }, [activeLesson, courseTree?.category?.title]);
+    return resolveLessonInteraction(activeLesson);
+  }, [activeLesson]);
 
   const handleWrongLesson = (customMessage?: string) => {
     setMessageTone("error");
@@ -294,7 +383,7 @@ function CourseTheoryPageContent() {
   };
 
   const handleSingleQuestionCheck = async () => {
-    if (!activeLesson || !lessonEnhancement?.singleQuestion) {
+    if (!activeLesson || !lessonInteraction || lessonInteraction.interactionType !== "singleQuestion") {
       return;
     }
 
@@ -309,10 +398,7 @@ function CourseTheoryPageContent() {
       return;
     }
 
-    const selectedOption = lessonEnhancement.singleQuestion.options.find(
-      (option) => option.id === selectedOptionId
-    );
-
+    const selectedOption = lessonInteraction.options.find((option) => option.id === selectedOptionId);
     if (!selectedOption) {
       handleWrongLesson("Выбери ответ.");
       return;
@@ -341,7 +427,7 @@ function CourseTheoryPageContent() {
   };
 
   const handleCompilerCheck = async () => {
-    if (!activeLesson || lessonEnhancement?.interactionType !== "compiler") {
+    if (!activeLesson || lessonInteraction?.interactionType !== "compiler") {
       return;
     }
 
@@ -361,7 +447,7 @@ function CourseTheoryPageContent() {
       const response = await submitTaskAnswer(activeLesson.id, compilerOutput);
 
       if (!response.is_correct) {
-        handleWrongLesson("Код пока не прошёл проверку. Попробуй доработать решение.");
+        handleWrongLesson("Код пока не прошел проверку. Попробуй доработать решение.");
         setProgressPercent(response.progress_percent);
         return;
       }
@@ -373,6 +459,44 @@ function CourseTheoryPageContent() {
         return;
       }
       handleWrongLesson(getApiErrorMessage(error, "Не удалось проверить код."));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleTextAnswerCheck = async () => {
+    if (!activeLesson || lessonInteraction?.interactionType !== "textAnswer") {
+      return;
+    }
+
+    if (!isActiveUnlocked) {
+      handleWrongLesson("Сначала пройди предыдущие уроки.");
+      return;
+    }
+
+    const textAnswer = textAnswerByTaskId[activeLesson.id] ?? "";
+    if (!textAnswer.trim()) {
+      handleWrongLesson("Введи ответ перед проверкой.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const response = await submitTaskAnswer(activeLesson.id, textAnswer);
+
+      if (!response.is_correct) {
+        handleWrongLesson("Неверно. Попробуй ещё раз.");
+        setProgressPercent(response.progress_percent);
+        return;
+      }
+
+      handleSuccessResult(response, "Верно.");
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        router.replace("/login");
+        return;
+      }
+      handleWrongLesson(getApiErrorMessage(error, "Не удалось проверить ответ."));
     } finally {
       setIsSubmitting(false);
     }
@@ -456,7 +580,7 @@ function CourseTheoryPageContent() {
     );
   }
 
-  if (!courseTree || !currentLessonRef || !activeLesson || !lessonEnhancement) {
+  if (!courseTree || !currentLessonRef || !activeLesson || !lessonInteraction) {
     return (
       <div>
         <Header />
@@ -478,15 +602,17 @@ function CourseTheoryPageContent() {
         : styles.messageDefault;
 
   const interactionLabel =
-    lessonEnhancement.interactionType === "theory"
+    lessonInteraction.interactionType === "theory"
       ? "Лекция"
-      : lessonEnhancement.interactionType === "compiler"
+      : lessonInteraction.interactionType === "compiler"
         ? "Практика кода"
-        : "Квиз";
+        : lessonInteraction.interactionType === "textAnswer"
+          ? "Практика"
+          : "Квиз";
 
   const showCompilerCheckButton =
     activeLesson.task_type !== "lecture" &&
-    lessonEnhancement.interactionType === "compiler";
+    lessonInteraction.interactionType === "compiler";
 
   return (
     <div>
@@ -561,60 +687,57 @@ function CourseTheoryPageContent() {
           </div>
 
           <div className={styles.practiceStack}>
-            {lessonEnhancement.interactionType === "theory" && (
+            {lessonInteraction.interactionType === "theory" && (
               <section className={styles.quizBlock}>
                 <h2 className={styles.quizTitle}>Теория</h2>
-                <p className={styles.quizSummary}>
-                  Прочитай материал урока. После лекции переходи к практике и квизам.
-                </p>
+                <p className={styles.quizSummary}>{lessonInteraction.prompt}</p>
               </section>
             )}
 
-            {lessonEnhancement.interactionType === "singleQuestion" &&
-              lessonEnhancement.singleQuestion && (
-                <section className={styles.quizBlock}>
-                  <h2 className={styles.quizTitle}>Квиз</h2>
-                  <p className={styles.quizSummary}>{lessonEnhancement.singleQuestion.prompt}</p>
-
-                  <div className={styles.singleQuestionOptions}>
-                    {lessonEnhancement.singleQuestion.options.map((option) => (
-                      <label key={option.id} className={styles.singleQuestionOption}>
-                        <input
-                          type="radio"
-                          name={`single-question-${activeLesson.id}`}
-                          checked={selectedOptionByTaskId[activeLesson.id] === option.id}
-                          onChange={() =>
-                            setSelectedOptionByTaskId((prev) => ({
-                              ...prev,
-                              [activeLesson.id]: option.id,
-                            }))
-                          }
-                          disabled={!isActiveUnlocked || isSubmitting}
-                        />
-                        <span>{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-
-                  <div className={styles.quizActions}>
-                    <Button
-                      size="m"
-                      variant="filled"
-                      color="logo"
-                      title={isSubmitting ? "Проверяем..." : "Проверить"}
-                      onClick={() => void handleSingleQuestionCheck()}
-                      disabled={!isActiveUnlocked || isSubmitting}
-                    />
-                  </div>
-                </section>
-              )}
-
-            {lessonEnhancement.interactionType === "compiler" && (
+            {lessonInteraction.interactionType === "singleQuestion" && (
               <section className={styles.quizBlock}>
-                <h2 className={styles.quizTitle}>{lessonEnhancement.compilerTitle}</h2>
+                <h2 className={styles.quizTitle}>Квиз</h2>
+                <p className={styles.quizSummary}>{lessonInteraction.prompt}</p>
+
+                <div className={styles.singleQuestionOptions}>
+                  {lessonInteraction.options.map((option) => (
+                    <label key={option.id} className={styles.singleQuestionOption}>
+                      <input
+                        type="radio"
+                        name={`single-question-${activeLesson.id}`}
+                        checked={selectedOptionByTaskId[activeLesson.id] === option.id}
+                        onChange={() =>
+                          setSelectedOptionByTaskId((prev) => ({
+                            ...prev,
+                            [activeLesson.id]: option.id,
+                          }))
+                        }
+                        disabled={!isActiveUnlocked || isSubmitting}
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+
+                <div className={styles.quizActions}>
+                  <Button
+                    size="m"
+                    variant="filled"
+                    color="logo"
+                    title={isSubmitting ? "Проверяем..." : "Проверить"}
+                    onClick={() => void handleSingleQuestionCheck()}
+                    disabled={!isActiveUnlocked || isSubmitting}
+                  />
+                </div>
+              </section>
+            )}
+
+            {lessonInteraction.interactionType === "compiler" && (
+              <section className={styles.quizBlock}>
+                <h2 className={styles.quizTitle}>{lessonInteraction.compilerTitle}</h2>
                 <PythonCompiler
-                  title={lessonEnhancement.compilerTitle}
-                  initialCode={lessonEnhancement.compilerInitialCode}
+                  title={lessonInteraction.compilerTitle}
+                  initialCode={lessonInteraction.compilerInitialCode}
                   onOutputChange={(output) =>
                     setCompilerOutputByTaskId((prev) => ({
                       ...prev,
@@ -635,6 +758,35 @@ function CourseTheoryPageContent() {
                     />
                   </div>
                 )}
+              </section>
+            )}
+
+            {lessonInteraction.interactionType === "textAnswer" && (
+              <section className={styles.quizBlock}>
+                <h2 className={styles.quizTitle}>Практика</h2>
+                <p className={styles.quizSummary}>{lessonInteraction.prompt}</p>
+                <textarea
+                  className={styles.answerInput}
+                  value={textAnswerByTaskId[activeLesson.id] ?? ""}
+                  onChange={(event) =>
+                    setTextAnswerByTaskId((prev) => ({
+                      ...prev,
+                      [activeLesson.id]: event.target.value,
+                    }))
+                  }
+                  disabled={!isActiveUnlocked || isSubmitting}
+                  placeholder="Введи ответ и нажми Проверить"
+                />
+                <div className={styles.quizActions}>
+                  <Button
+                    size="m"
+                    variant="filled"
+                    color="logo"
+                    title={isSubmitting ? "Проверяем..." : "Проверить"}
+                    onClick={() => void handleTextAnswerCheck()}
+                    disabled={!isActiveUnlocked || isSubmitting}
+                  />
+                </div>
               </section>
             )}
           </div>
