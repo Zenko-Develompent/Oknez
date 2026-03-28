@@ -15,9 +15,8 @@
 ### 1. Клонирование репозитория
 #### Клонируйте репозиторий (можете скопировать ссылку в правом углу)
 ```bash
-git clone https://github.com/Zenko-Develompent/fivneosi343f
+git clone --branch backupfront --single-branch https://github.com/Zenko-Develompent/fivneosi343f
 cd fivneosi343f
-git checkout backupfront
 ```
 
 ### 2. Подготовка переменных окружения
