@@ -31,5 +31,14 @@ cp backend/.env.example backend/.env
 docker compose up -d
 ```
 
+### Команда, чтобы потушить контейнеры (выполнять из папки репозитория)
+```bash
+docker compose down
+```
+### Команда, чтобы потушить контейнеры вместе с томами базы данных
+```bash
+docker compose down -v
+```
+
 
 
