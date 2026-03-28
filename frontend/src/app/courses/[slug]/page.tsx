@@ -9,9 +9,13 @@ import HippoOrange from "@/shared/assets/images/hippoorange.png";
 import {
   ApiError,
   CourseDetailPublic,
+  CoursePreviewPublic,
+  CourseTreePublic,
   enrollCourse,
   getApiErrorMessage,
   getCourseById,
+  getCourseTree,
+  getHomeCourses,
 } from "@/shared/api/client";
 import { getAccessToken } from "@/shared/auth/tokens";
 import styles from "./coursePage.module.css";
@@ -34,6 +38,8 @@ export default function CoursePage() {
   const router = useRouter();
   const params = useParams<{ slug: string }>();
   const [course, setCourse] = useState<CourseDetailPublic | null>(null);
+  const [courseTree, setCourseTree] = useState<CourseTreePublic | null>(null);
+  const [fallbackCourse, setFallbackCourse] = useState<CoursePreviewPublic | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -48,6 +54,16 @@ export default function CoursePage() {
 
     return parsedValue;
   }, [params?.slug]);
+
+  const totalLessons = useMemo(
+    () =>
+      (courseTree?.modules ?? []).reduce(
+        (count, module) =>
+          count + module.topics.reduce((topicCount, topic) => topicCount + topic.tasks.length, 0),
+        0
+      ),
+    [courseTree]
+  );
 
   useEffect(() => {
     if (!courseId) {
@@ -68,13 +84,19 @@ export default function CoursePage() {
     const loadCourse = async () => {
       try {
         setIsLoading(true);
-        const response = await getCourseById(courseId);
+        const [courseResponse, treeResponse] = await Promise.all([
+          getCourseById(courseId),
+          getCourseTree(courseId),
+        ]);
 
         if (cancelled) {
           return;
         }
 
-        setCourse(response);
+        setCourse(courseResponse);
+        setCourseTree(treeResponse);
+        setFallbackCourse(null);
+        setErrorMessage("");
       } catch (error) {
         if (cancelled) {
           return;
@@ -85,7 +107,25 @@ export default function CoursePage() {
           return;
         }
 
-        setErrorMessage(getApiErrorMessage(error, "Не удалось загрузить курс."));
+        try {
+          const homeData = await getHomeCourses();
+          const fallback =
+            homeData.all_courses.find((item) => item.course_id === courseId) ??
+            homeData.my_courses.find((item) => item.course_id === courseId) ??
+            null;
+
+          if (!cancelled) {
+            setFallbackCourse(fallback);
+            setCourseTree(null);
+            setErrorMessage(
+              fallback ? "" : getApiErrorMessage(error, "Не удалось загрузить курс.")
+            );
+          }
+        } catch {
+          if (!cancelled) {
+            setErrorMessage(getApiErrorMessage(error, "Не удалось загрузить курс."));
+          }
+        }
       } finally {
         if (!cancelled) {
           setIsLoading(false);
@@ -100,7 +140,7 @@ export default function CoursePage() {
     };
   }, [courseId, router]);
 
-  const tone = getToneByCategory(course?.category?.title ?? "");
+  const tone = getToneByCategory(course?.category?.title ?? fallbackCourse?.category?.title ?? "");
   const heroClass = `${styles.hero} ${tone === "blue" ? styles.heroBlue : styles.heroOrange}`.trim();
   const ctaClass = `${styles.ctaButton} ${tone === "blue" ? styles.ctaBlue : styles.ctaOrange}`.trim();
 
@@ -123,13 +163,17 @@ export default function CoursePage() {
         return;
       }
 
-      setErrorMessage(
-        getApiErrorMessage(error, "Не удалось записаться на курс.")
-      );
+      setErrorMessage(getApiErrorMessage(error, "Не удалось записаться на курс."));
     } finally {
       setIsEnrolling(false);
     }
   };
+
+  const descriptionText =
+    course?.description?.trim() ||
+    fallbackCourse?.description?.trim() ||
+    "Описание курса пока не добавлено.";
+  const progressPercent = course?.progress_percent ?? fallbackCourse?.progress_percent ?? null;
 
   return (
     <div className={styles.page}>
@@ -137,12 +181,19 @@ export default function CoursePage() {
 
       <section className={heroClass}>
         <div className={styles.heroText}>
-          <span className={styles.categoryPill}>{course?.category?.title ?? "Курс"}</span>
+          <span className={styles.categoryPill}>
+            {course?.category?.title ?? fallbackCourse?.category?.title ?? "Курс"}
+          </span>
           <h1 className={styles.title}>
-            {course?.title ?? "Загрузка курса..."}
+            {course?.title ?? fallbackCourse?.title ?? "Загрузка курса..."}
           </h1>
           <div className={styles.heroCtaWrap}>
-            <button type="button" className={ctaClass} onClick={handleEnroll} disabled={isEnrolling || !courseId}>
+            <button
+              type="button"
+              className={ctaClass}
+              onClick={handleEnroll}
+              disabled={isEnrolling || !courseId}
+            >
               {isEnrolling ? "Записываем..." : "Поступить на курс!"}
             </button>
           </div>
@@ -151,7 +202,7 @@ export default function CoursePage() {
         <img
           className={styles.heroImage}
           src={tone === "blue" ? HippoBlue.src : HippoOrange.src}
-          alt={course?.title ?? "Курс"}
+          alt={course?.title ?? fallbackCourse?.title ?? "Курс"}
         />
       </section>
 
@@ -162,21 +213,45 @@ export default function CoursePage() {
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>О курсе</h2>
-          <p className={styles.paragraph}>
-            {course?.description?.trim()
-              ? course.description
-              : "Описание курса пока не добавлено."}
-          </p>
+          <p className={styles.paragraph}>{descriptionText}</p>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Текущий прогресс</h2>
           <p className={styles.paragraph}>
-            {course?.progress_percent !== null && course?.progress_percent !== undefined
-              ? `${Math.round(course.progress_percent)}%`
-              : "Вы еще не начали этот курс."}
+            {progressPercent !== null && progressPercent !== undefined
+              ? `${Math.round(progressPercent)}%`
+              : "Вы ещё не начали этот курс."}
           </p>
         </section>
+
+        {courseTree && (
+          <>
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>Программа курса</h2>
+              <p className={styles.paragraph}>
+                Всего уроков: {totalLessons}. Программа подгружается только с сервера.
+              </p>
+              <div className={styles.programGrid}>
+                {courseTree.modules.map((module) => (
+                  <article key={module.id} className={styles.programCard}>
+                    <h3 className={styles.programCardTitle}>{module.title}</h3>
+                    <p className={styles.programCardDescription}>
+                      {module.description?.trim() || "Описание модуля не добавлено."}
+                    </p>
+                    <ul className={styles.programThemeList}>
+                      {module.topics.map((theme) => (
+                        <li key={theme.id}>
+                          {theme.title} · уроков: {theme.tasks.length}
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
 
         <div className={styles.bottomCta}>
           <Link href="/" className={ctaClass}>

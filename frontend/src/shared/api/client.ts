@@ -299,7 +299,17 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
     return error.message;
   }
 
+  if (
+    error instanceof TypeError &&
+    /failed to fetch|networkerror|load failed/i.test(error.message)
+  ) {
+    return fallback;
+  }
+
   if (error instanceof Error && error.message) {
+    if (/failed to fetch|networkerror|load failed/i.test(error.message)) {
+      return fallback;
+    }
     return error.message;
   }
 

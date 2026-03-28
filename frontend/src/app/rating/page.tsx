@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Header from "@/components/header/header";
 import LevelBadge from "@/components/levelBadge/levelBadge";
 import CoinIcon from "@/shared/assets/icons/coin.svg";
+import FirstPlaceIcon from "@/shared/assets/images/firstplace.png";
+import SecondPlaceIcon from "@/shared/assets/images/secondplace.png";
+import ThirdPlaceIcon from "@/shared/assets/images/thirdplace.png";
 import { getApiErrorMessage, getMyProfile, getRatingTop, RatingUserPublic } from "@/shared/api/client";
 import { getAccessToken } from "@/shared/auth/tokens";
 import styles from "./rating.module.css";
@@ -58,11 +61,13 @@ export default function RatingPage() {
       ? -1
       : topStudents.findIndex((student) => student.user_id === currentUserId) + 1;
 
-  const getWinnerClass = (index: number): string => {
-    if (index === 0) return styles.winnerGold;
-    if (index === 1) return styles.winnerSilver;
-    if (index === 2) return styles.winnerBronze;
-    return "";
+  const getTopThreeClass = (index: number): string => (index < 3 ? styles.topThreeRow : "");
+
+  const getPlaceIcon = (index: number) => {
+    if (index === 0) return FirstPlaceIcon;
+    if (index === 1) return SecondPlaceIcon;
+    if (index === 2) return ThirdPlaceIcon;
+    return null;
   };
 
   return (
@@ -89,35 +94,48 @@ export default function RatingPage() {
         {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
 
         <ol className={styles.list}>
-          {topStudents.map((student, index) => (
-            <li
-              key={student.user_id}
-              className={`${styles.row} ${getWinnerClass(index)} ${
-                student.user_id === currentUserId ? styles.rowCurrentUser : ""
-              }`.trim()}
-            >
-              <span className={`${styles.place} ${getWinnerClass(index)}`.trim()}>
-                {index + 1}
-              </span>
+          {topStudents.map((student, index) => {
+            const placeIcon = getPlaceIcon(index);
 
-              <div className={styles.studentInfo}>
-                <p className={styles.studentName}>
-                  {student.first_name}
-                  {student.last_name ? ` ${student.last_name}` : ""}
+            return (
+              <li
+                key={student.user_id}
+                className={`${styles.row} ${getTopThreeClass(index)} ${
+                  student.user_id === currentUserId ? styles.rowCurrentUser : ""
+                }`.trim()}
+              >
+                <span className={styles.place}>
+                  {index + 1}
+                </span>
+
+                <div className={styles.studentInfo}>
+                  <div className={styles.studentNameRow}>
+                    <p className={styles.studentName}>
+                      {student.first_name}
+                      {student.last_name ? ` ${student.last_name}` : ""}
+                    </p>
+                    {placeIcon ? (
+                      <img
+                        className={styles.placeIcon}
+                        src={placeIcon.src}
+                        alt={`${index + 1} место`}
+                      />
+                    ) : null}
+                  </div>
+                  <LevelBadge
+                    level={student.level}
+                    tone="orange"
+                    className={styles.studentLevelBadge}
+                  />
+                </div>
+
+                <p className={styles.coins}>
+                  <span>{student.total_xp}</span>
+                  <img src={CoinIcon.src} alt="" aria-hidden="true" />
                 </p>
-                <LevelBadge
-                  level={student.level}
-                  tone="orange"
-                  className={styles.studentLevelBadge}
-                />
-              </div>
-
-              <p className={styles.coins}>
-                <span>{student.total_xp}</span>
-                <img src={CoinIcon.src} alt="" aria-hidden="true" />
-              </p>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ol>
       </main>
     </div>

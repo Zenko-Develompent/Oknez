@@ -5,22 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/header/header";
 import Sidebar from "@/components/sidebar/sidebar";
 import Button from "@/components/button/button";
-import PythonCompiler, {
-  preloadPythonCompilerAssets,
-} from "@/components/pythonCompiler/pythonCompiler";
-import GuessCodeGame from "@/components/games/guessCode/guessCode";
-import FixCodeGame from "@/components/games/fixCode/fixCode";
-import MemoryMatchGame from "@/components/games/memoryMatch/memoryMatch";
-import { COURSE_THEORY_PAYLOADS } from "./mockCourseData";
-import type {
-  CourseItemDTO,
-  CourseLessonItemDTO,
-  CourseTheoryPayloadDTO,
-} from "./types";
 import {
   ApiError,
   CourseTreePublic,
-  TaskType,
+  TaskTreePublic,
   getApiErrorMessage,
   getCourseTree,
   submitTaskAnswer,
@@ -28,171 +16,106 @@ import {
 import { getAccessToken } from "@/shared/auth/tokens";
 import styles from "./course.module.css";
 
-interface RemoteLessonMeta {
-  taskId: number;
-  taskType: TaskType;
+interface FlatLessonRef {
+  moduleId: string;
+  moduleTitle: string;
+  themeId: string;
+  themeTitle: string;
+  themeSummary: string;
+  lesson: TaskTreePublic;
+  isFinal: boolean;
+  lessonType: "lecture" | "practice" | "quiz";
 }
 
-interface RemotePayloadResult {
-  payload: CourseTheoryPayloadDTO;
-  lessonMetaById: Record<string, RemoteLessonMeta>;
+type MessageTone = "default" | "success" | "error";
+
+function isFinalTask(task: TaskTreePublic): boolean {
+  const source = `${task.title} ${task.description ?? ""}`.toLowerCase();
+  return source.includes("итог") || source.includes("финал");
 }
 
-function getCourseItemKey(item: CourseItemDTO): string {
-  if (item.type === "theme") {
-    return `${item.moduleId}-${item.themeId}-theme`;
-  }
+function flattenLessons(program: CourseTreePublic): FlatLessonRef[] {
+  const flat: FlatLessonRef[] = [];
 
-  if (item.type === "lesson") {
-    return `${item.moduleId}-${item.themeId}-${item.lessonId}`;
-  }
-
-  return `${item.moduleId}-${item.themeId}-${item.gameId}`;
-}
-
-function getFallbackCourse(): CourseTheoryPayloadDTO | undefined {
-  return COURSE_THEORY_PAYLOADS[0];
-}
-
-function buildPayloadFromTree(tree: CourseTreePublic): RemotePayloadResult {
-  const lessonMetaById: Record<string, RemoteLessonMeta> = {};
-  const flow: CourseItemDTO[] = [];
-
-  const modules = tree.modules.map((module) => ({
-    moduleId: String(module.id),
-    title: module.title,
-    themes: module.topics.map((topic) => ({
-      themeId: String(topic.id),
-      title: topic.title,
-      lessons: topic.tasks.map((task) => ({
-        lessonId: `task-${task.id}`,
-        title: task.title,
-      })),
-    })),
-  }));
-
-  for (const module of tree.modules) {
-    for (const topic of module.topics) {
-      const moduleId = String(module.id);
-      const themeId = String(topic.id);
-
-      flow.push({
-        type: "theme",
-        moduleId,
-        themeId,
-        title: topic.title,
-        text: topic.description ?? "Изучи материалы темы и переходи к заданиям.",
-      });
-
-      for (const task of topic.tasks) {
-        const lessonId = `task-${task.id}`;
-        lessonMetaById[lessonId] = {
-          taskId: task.id,
-          taskType: task.task_type,
-        };
-
-        flow.push({
-          type: "lesson",
-          moduleId,
-          themeId,
-          lessonId,
-          title: task.title,
-          text: task.description ?? "Выполни задание и отправь ответ.",
-          showCompiler: task.task_type !== "lecture",
+  for (const module of program.modules) {
+    for (const theme of module.topics) {
+      for (const lesson of theme.tasks) {
+        flat.push({
+          moduleId: String(module.id),
+          moduleTitle: module.title,
+          themeId: String(theme.id),
+          themeTitle: theme.title,
+          themeSummary: theme.description ?? "",
+          lesson,
+          isFinal: isFinalTask(lesson),
+          lessonType: lesson.task_type,
         });
       }
     }
   }
 
-  return {
-    payload: {
-      courseId: String(tree.id),
-      courseTitle: tree.title,
-      audience: tree.category?.title ?? undefined,
-      modules,
-      flow,
-    },
-    lessonMetaById,
-  };
+  return flat;
 }
 
 function CourseTheoryPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const requestedCourseId = searchParams.get("courseId");
 
-  const [selectedCourseId, setSelectedCourseId] = useState(
-    getFallbackCourse()?.courseId ?? ""
-  );
+  const courseIdFromQuery = Number(searchParams.get("courseId") ?? "0");
+  const courseId =
+    Number.isFinite(courseIdFromQuery) && courseIdFromQuery > 0 ? courseIdFromQuery : null;
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const [remotePayload, setRemotePayload] = useState<CourseTheoryPayloadDTO | null>(null);
-  const [remoteLessonMetaById, setRemoteLessonMetaById] = useState<
-    Record<string, RemoteLessonMeta>
-  >({});
-  const [isRemoteLoading, setIsRemoteLoading] = useState(false);
-  const [remoteError, setRemoteError] = useState("");
-
-  const [answerBody, setAnswerBody] = useState("");
-  const [answerMessage, setAnswerMessage] = useState("");
-  const [isAnswerSubmitting, setIsAnswerSubmitting] = useState(false);
-
-  useEffect(() => {
-    const warmup = () => {
-      void preloadPythonCompilerAssets();
-    };
-
-    if (typeof globalThis.requestIdleCallback === "function") {
-      const idleId = globalThis.requestIdleCallback(warmup, { timeout: 1500 });
-      return () => globalThis.cancelIdleCallback(idleId);
-    }
-
-    const timeoutId = setTimeout(warmup, 500);
-    return () => clearTimeout(timeoutId);
-  }, []);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [selectedLessonId, setSelectedLessonId] = useState<string>("");
+  const [courseTree, setCourseTree] = useState<CourseTreePublic | null>(null);
+  const [sessionCompletedIds, setSessionCompletedIds] = useState<number[]>([]);
+  const [answerByTaskId, setAnswerByTaskId] = useState<Record<number, string>>({});
+  const [progressPercent, setProgressPercent] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<MessageTone>("default");
+  const lessons = useMemo(() => (courseTree ? flattenLessons(courseTree) : []), [courseTree]);
 
   useEffect(() => {
-    if (!requestedCourseId) {
-      setRemotePayload(null);
-      setRemoteLessonMetaById({});
-      setRemoteError("");
-      return;
-    }
+    const token = getAccessToken();
 
-    const numericCourseId = Number(requestedCourseId);
-
-    if (!Number.isInteger(numericCourseId) || numericCourseId <= 0) {
-      setRemotePayload(null);
-      setRemoteLessonMetaById({});
-      setRemoteError("Некорректный идентификатор курса.");
-      return;
-    }
-
-    const accessToken = getAccessToken();
-
-    if (!accessToken) {
+    if (!token) {
       router.replace("/login");
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (!courseId) {
+      setErrorMessage("Некорректный идентификатор курса.");
+      setIsLoading(false);
+      return;
+    }
+
+    const token = getAccessToken();
+    if (!token) {
       return;
     }
 
     let cancelled = false;
 
-    const loadRemoteCourse = async () => {
+    const loadCourseTree = async () => {
       try {
-        setIsRemoteLoading(true);
-        setRemoteError("");
-
-        const tree = await getCourseTree(numericCourseId);
+        setIsLoading(true);
+        setErrorMessage("");
+        const response = await getCourseTree(courseId);
 
         if (cancelled) {
           return;
         }
 
-        const converted = buildPayloadFromTree(tree);
-        setRemotePayload(converted.payload);
-        setRemoteLessonMetaById(converted.lessonMetaById);
-        setSelectedCourseId(converted.payload.courseId);
+        setCourseTree(response);
+        setProgressPercent(response.progress_percent ?? 0);
+        setSessionCompletedIds([]);
+        setAnswerByTaskId({});
+        setSelectedLessonId("");
+        setMessage("");
       } catch (error) {
         if (cancelled) {
           return;
@@ -203,321 +126,377 @@ function CourseTheoryPageContent() {
           return;
         }
 
-        setRemotePayload(null);
-        setRemoteLessonMetaById({});
-        setRemoteError(
-          getApiErrorMessage(error, "Не удалось загрузить структуру курса.")
-        );
+        setErrorMessage(getApiErrorMessage(error, "Не удалось загрузить структуру курса."));
       } finally {
         if (!cancelled) {
-          setIsRemoteLoading(false);
+          setIsLoading(false);
         }
       }
     };
 
-    void loadRemoteCourse();
+    void loadCourseTree();
 
     return () => {
       cancelled = true;
     };
-  }, [requestedCourseId, router]);
+  }, [courseId, router]);
 
-  const coursePayload = useMemo(() => {
-    if (remotePayload) {
-      return remotePayload;
+  const sessionCompletedSet = useMemo(
+    () => new Set(sessionCompletedIds),
+    [sessionCompletedIds]
+  );
+
+  const unlockedByLessonId = useMemo(() => {
+    const unlocked = new Map<string, boolean>();
+    const isCompleted = (item: FlatLessonRef): boolean =>
+      item.lesson.task_type === "lecture" || sessionCompletedSet.has(item.lesson.id);
+    const allRequiredBeforeFinalDone = lessons
+      .filter((item) => item.lesson.task_type !== "lecture" && !item.isFinal)
+      .every((item) => sessionCompletedSet.has(item.lesson.id));
+
+    for (const [index, item] of lessons.entries()) {
+      const requiredBeforeDone = lessons
+        .slice(0, index)
+        .filter((prev) => prev.lesson.task_type !== "lecture")
+        .every((prev) => isCompleted(prev));
+
+      let isUnlocked = index === 0 || requiredBeforeDone || isCompleted(item);
+
+      if (item.isFinal && !allRequiredBeforeFinalDone && !sessionCompletedSet.has(item.lesson.id)) {
+        isUnlocked = false;
+      }
+
+      unlocked.set(String(item.lesson.id), isUnlocked);
     }
 
-    const found = COURSE_THEORY_PAYLOADS.find(
-      (course) => course.courseId === selectedCourseId
-    );
-    return found ?? getFallbackCourse();
-  }, [remotePayload, selectedCourseId]);
-
-  const courseFlow = coursePayload?.flow ?? [];
-  const isRemoteMode = Boolean(remotePayload);
+    return unlocked;
+  }, [lessons, sessionCompletedSet]);
 
   useEffect(() => {
-    setCurrentIndex(0);
-  }, [coursePayload?.courseId]);
-
-  useEffect(() => {
-    setAnswerBody("");
-    setAnswerMessage("");
-  }, [coursePayload?.courseId, currentIndex]);
-
-  if (isRemoteLoading) {
-    return (
-      <div>
-        <Header />
-        <main className={styles.emptyState}>Загружаем структуру курса...</main>
-      </div>
-    );
-  }
-
-  if (requestedCourseId && remoteError && !remotePayload) {
-    return (
-      <div>
-        <Header />
-        <main className={styles.emptyState}>{remoteError}</main>
-      </div>
-    );
-  }
-
-  if (!coursePayload || courseFlow.length === 0) {
-    return (
-      <div>
-        <Header />
-        <main className={styles.emptyState}>Курс пока не заполнен.</main>
-      </div>
-    );
-  }
-
-  const safeIndex = Math.min(currentIndex, Math.max(courseFlow.length - 1, 0));
-  const totalFlowSteps = courseFlow.length;
-  const currentStep = safeIndex + 1;
-  const isLastStep = safeIndex === courseFlow.length - 1;
-
-  const currentItem = courseFlow[safeIndex];
-  const currentThemeItems = courseFlow.filter(
-    (item) => item.themeId === currentItem.themeId
-  );
-  const currentThemeStep = Math.max(
-    currentThemeItems.findIndex(
-      (item) => getCourseItemKey(item) === getCourseItemKey(currentItem)
-    ) + 1,
-    1
-  );
-
-  const currentLesson: CourseLessonItemDTO | null =
-    currentItem.type === "lesson" ? currentItem : null;
-  const currentGame = currentItem.type === "game" ? currentItem : null;
-
-  const currentRemoteLessonMeta = currentLesson
-    ? remoteLessonMetaById[currentLesson.lessonId]
-    : undefined;
-  const currentRemoteTaskType = currentRemoteLessonMeta?.taskType;
-  const canSubmitRemoteAnswer = Boolean(
-    currentRemoteLessonMeta && currentRemoteTaskType !== "lecture"
-  );
-
-  const shouldShowCompiler = Boolean(
-    currentLesson &&
-      (currentRemoteTaskType
-        ? currentRemoteTaskType !== "lecture"
-        : currentLesson.showCompiler !== false)
-  );
-
-  const activeModuleId = currentItem.moduleId;
-  const activeThemeId = currentItem.themeId;
-  const activeLessonId =
-    currentItem.type === "lesson"
-      ? currentItem.lessonId
-      : currentItem.type === "game"
-        ? currentItem.lessonId
-        : undefined;
-
-  const currentContent =
-    currentItem.type === "game"
-      ? currentItem.description
-      : currentItem.contentMd ?? currentItem.text;
-
-  const handleThemeSelect = (themeId: string) => {
-    const index = courseFlow.findIndex(
-      (item) => item.type === "theme" && item.themeId === themeId
-    );
-    if (index !== -1) {
-      setCurrentIndex(index);
-    }
-  };
-
-  const handleLessonSelect = (themeId: string, lessonId: string) => {
-    const index = courseFlow.findIndex(
-      (item) =>
-        item.type === "lesson" &&
-        item.themeId === themeId &&
-        item.lessonId === lessonId
-    );
-    if (index !== -1) {
-      setCurrentIndex(index);
-    }
-  };
-
-  const handleNext = () => {
-    if (isLastStep) {
-      router.push("/");
+    if (lessons.length === 0) {
       return;
     }
 
-    setCurrentIndex((prev) => Math.min(prev + 1, courseFlow.length - 1));
-  };
-
-  const handleSubmitAnswer = async () => {
-    if (!currentRemoteLessonMeta) {
+    if (selectedLessonId && unlockedByLessonId.get(selectedLessonId)) {
       return;
     }
 
-    if (!answerBody.trim()) {
-      setAnswerMessage("Введите ответ перед отправкой.");
+    const firstUnlocked = lessons.find((item) => unlockedByLessonId.get(String(item.lesson.id)));
+    setSelectedLessonId(String((firstUnlocked ?? lessons[0]).lesson.id));
+  }, [lessons, selectedLessonId, unlockedByLessonId]);
+
+  const currentIndex = useMemo(() => {
+    if (lessons.length === 0) {
+      return -1;
+    }
+
+    const index = lessons.findIndex((item) => String(item.lesson.id) === selectedLessonId);
+    return index >= 0 ? index : 0;
+  }, [lessons, selectedLessonId]);
+
+  const currentLessonRef = currentIndex >= 0 ? lessons[currentIndex] : null;
+  const activeLesson = currentLessonRef?.lesson ?? null;
+  const activeThemeId = currentLessonRef?.themeId;
+  const isActiveUnlocked = activeLesson
+    ? Boolean(unlockedByLessonId.get(String(activeLesson.id)))
+    : false;
+
+  const activeThemeLessons = useMemo(() => {
+    if (!activeThemeId) {
+      return [];
+    }
+
+    return lessons.filter((item) => item.themeId === activeThemeId);
+  }, [activeThemeId, lessons]);
+
+  const currentThemeStep = useMemo(() => {
+    if (!currentLessonRef || activeThemeLessons.length === 0) {
+      return 1;
+    }
+
+    const index = activeThemeLessons.findIndex(
+      (item) => item.lesson.id === currentLessonRef.lesson.id
+    );
+    return index >= 0 ? index + 1 : 1;
+  }, [activeThemeLessons, currentLessonRef]);
+
+  const handleWrongLesson = (customMessage?: string) => {
+    setMessageTone("error");
+    setMessage(customMessage ?? "Ответ неверный. Попробуй ещё раз.");
+  };
+
+  const handleCheckAnswer = async () => {
+    if (!activeLesson) {
+      return;
+    }
+
+    if (!isActiveUnlocked) {
+      handleWrongLesson("Сначала пройди предыдущие уроки.");
+      return;
+    }
+
+    if (activeLesson.task_type === "lecture") {
+      setMessageTone("default");
+      setMessage("Это теоретический урок, переходи к следующему шагу.");
+      return;
+    }
+
+    const answer = (answerByTaskId[activeLesson.id] ?? "").trim();
+    if (!answer) {
+      handleWrongLesson("Введи ответ перед проверкой.");
       return;
     }
 
     try {
-      setIsAnswerSubmitting(true);
-      const response = await submitTaskAnswer(
-        currentRemoteLessonMeta.taskId,
-        answerBody.trim()
-      );
+      setIsSubmitting(true);
+      const response = await submitTaskAnswer(activeLesson.id, answer);
+      setProgressPercent(response.progress_percent);
 
-      const achievementPart =
-        response.awarded_achievements.length > 0
-          ? ` Новые достижения: ${response.awarded_achievements
-              .map((achievement) => achievement.title)
-              .join(", ")}.`
-          : "";
+      if (response.is_correct) {
+        setSessionCompletedIds((prev) =>
+          prev.includes(activeLesson.id) ? prev : [...prev, activeLesson.id]
+        );
 
-      setAnswerMessage(
-        `${response.message}. +${response.awarded_xp} XP. Прогресс курса: ${Math.round(
-          response.progress_percent
-        )}%.${achievementPart}`
-      );
+        if (response.awarded_xp > 0) {
+          setMessageTone("success");
+          setMessage(`Верно. +${response.awarded_xp} XP.`);
+        } else {
+          setMessageTone("success");
+          setMessage("Верно. Ответ уже был засчитан ранее, XP повторно не начисляются.");
+        }
+        return;
+      }
+
+      handleWrongLesson("Ответ неверный. Попробуй ещё раз.");
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         router.replace("/login");
         return;
       }
-
-      setAnswerMessage(getApiErrorMessage(error, "Не удалось проверить ответ."));
+      handleWrongLesson(getApiErrorMessage(error, "Не удалось отправить ответ."));
     } finally {
-      setIsAnswerSubmitting(false);
+      setIsSubmitting(false);
     }
   };
+
+  const handleThemeSelect = (themeId: string) => {
+    const themeLessons = lessons.filter((item) => item.themeId === themeId);
+    const firstUnlocked = themeLessons.find((item) =>
+      unlockedByLessonId.get(String(item.lesson.id))
+    );
+
+    if (!firstUnlocked) {
+      handleWrongLesson("Тема пока заблокирована. Сначала пройди предыдущие уроки.");
+      return;
+    }
+
+    setSelectedLessonId(String(firstUnlocked.lesson.id));
+    setMessage("");
+  };
+
+  const handleLessonSelect = (_themeId: string, lessonId: string) => {
+    if (!unlockedByLessonId.get(lessonId)) {
+      handleWrongLesson("Урок пока заблокирован. Сначала пройди предыдущие.");
+      return;
+    }
+
+    setSelectedLessonId(lessonId);
+    setMessage("");
+  };
+
+  const handleNext = () => {
+    if (currentIndex < 0) {
+      return;
+    }
+
+    if (currentIndex >= lessons.length - 1) {
+      router.push("/");
+      return;
+    }
+
+    const nextLesson = lessons[currentIndex + 1];
+    if (!unlockedByLessonId.get(String(nextLesson.lesson.id))) {
+      handleWrongLesson("Следующий урок пока заблокирован.");
+      return;
+    }
+
+    setSelectedLessonId(String(nextLesson.lesson.id));
+    setMessage("");
+  };
+
+  const totalRequiredSteps = lessons.filter((item) => item.lesson.task_type !== "lecture").length;
+  const completedSteps =
+    totalRequiredSteps > 0
+      ? Math.min(
+          totalRequiredSteps,
+          Math.max(Math.round((progressPercent / 100) * totalRequiredSteps), sessionCompletedIds.length)
+        )
+      : 0;
+
+  if (isLoading) {
+    return (
+      <div>
+        <Header />
+        <main className={styles.emptyState}>
+          Загружаем курс...
+        </main>
+      </div>
+    );
+  }
+
+  if (errorMessage) {
+    return (
+      <div>
+        <Header />
+        <main className={styles.emptyState}>{errorMessage}</main>
+      </div>
+    );
+  }
+
+  if (!courseTree || !currentLessonRef || !activeLesson) {
+    return (
+      <div>
+        <Header />
+        <main className={styles.emptyState}>В курсе пока нет уроков.</main>
+      </div>
+    );
+  }
+
+  const isCompleted =
+    activeLesson.task_type === "lecture" || sessionCompletedSet.has(activeLesson.id);
+  const messageClass =
+    messageTone === "success"
+      ? styles.messageSuccess
+      : messageTone === "error"
+        ? styles.messageError
+        : styles.messageDefault;
 
   return (
     <div>
       <Header />
       <div className={styles.page}>
         <Sidebar
-          totalSteps={totalFlowSteps}
-          completedSteps={currentStep}
+          totalSteps={Math.max(totalRequiredSteps, 1)}
+          completedSteps={completedSteps}
           isOpen={isSidebarOpen}
           onToggle={() => setIsSidebarOpen((prev) => !prev)}
-          courseTitle={coursePayload.courseTitle}
-          modules={coursePayload.modules.map((module) => ({
-            moduleId: module.moduleId,
+          courseTitle={courseTree.title}
+          modules={courseTree.modules.map((module) => ({
+            moduleId: String(module.id),
             title: module.title,
-            themes: module.themes.map((theme) => ({
-              themeId: theme.themeId,
+            themes: module.topics.map((theme) => ({
+              themeId: String(theme.id),
               title: theme.title,
-              lessons: theme.lessons.map((lesson) => ({
-                lessonId: lesson.lessonId,
+              isDisabled: (() => {
+                const firstTask = theme.tasks[0];
+                if (!firstTask) {
+                  return false;
+                }
+                return !unlockedByLessonId.get(String(firstTask.id));
+              })(),
+              lessons: theme.tasks.map((lesson) => ({
+                lessonId: String(lesson.id),
                 title: lesson.title,
+                isDisabled: !unlockedByLessonId.get(String(lesson.id)),
               })),
             })),
           }))}
-          activeModuleId={activeModuleId}
-          activeThemeId={activeThemeId}
-          activeLessonId={activeLessonId}
+          activeModuleId={currentLessonRef.moduleId}
+          activeThemeId={currentLessonRef.themeId}
+          activeLessonId={String(activeLesson.id)}
           onThemeSelect={handleThemeSelect}
           onLessonSelect={handleLessonSelect}
         />
 
         <main className={styles.content}>
-          {!isRemoteMode && (
-            <div className={styles.courseSwitch}>
-              {COURSE_THEORY_PAYLOADS.map((course) => (
-                <Button
-                  key={course.courseId}
-                  title={course.courseTitle}
-                  size="s"
-                  variant={selectedCourseId === course.courseId ? "filled" : "outline"}
-                  color={selectedCourseId === course.courseId ? "logo" : "blue"}
-                  className={styles.courseSwitchButton}
-                  onClick={() => setSelectedCourseId(course.courseId)}
-                />
-              ))}
-            </div>
-          )}
-
-          {coursePayload.audience && (
-            <p className={styles.audienceText}>Аудитория: {coursePayload.audience}</p>
-          )}
+          <p className={styles.audienceText}>Прогресс курса: {Math.round(progressPercent)}%</p>
 
           <div className={styles.stepBanner}>
             <div className={styles.stepBannerTop}>
-              Шаг {currentThemeStep} из {currentThemeItems.length}
+              Шаг {currentThemeStep} из {activeThemeLessons.length}
             </div>
             <div className={styles.stepBannerBottom}>
-              <div className={styles.stepSegments}>
-                {currentThemeItems.map((item, index) => (
-                  <span
-                    key={getCourseItemKey(item)}
-                    className={`${styles.stepSegment} ${
-                      index + 1 === currentThemeStep ? styles.stepSegmentActive : ""
-                    }`.trim()}
+                <div className={styles.stepSegments}>
+                  {activeThemeLessons.map((lessonRef, index) => (
+                    <span
+                      key={lessonRef.lesson.id}
+                      className={`${styles.stepSegment} ${
+                        index + 1 === currentThemeStep ? styles.stepSegmentActive : ""
+                      }`.trim()}
                   />
                 ))}
               </div>
             </div>
           </div>
 
-          <h1 className={styles.contentTitle}>{currentItem.title}</h1>
-          {currentContent && <p className={styles.contentText}>{currentContent}</p>}
+          <p className={styles.metaLine}>
+            {currentLessonRef.moduleTitle} · {currentLessonRef.themeTitle}
+          </p>
+          <h1 className={styles.contentTitle}>{activeLesson.title}</h1>
+          <p className={styles.contentText}>
+            {activeLesson.description?.trim() || "Описание урока пока не добавлено."}
+          </p>
+          <p className={styles.themeSummary}>{currentLessonRef.themeSummary}</p>
 
-          {currentLesson && (
-            <div className={styles.practiceStack}>
-              {shouldShowCompiler && (
-                <div className={styles.compilerBlock}>
-                  <PythonCompiler
-                    key={`compiler-${currentLesson.moduleId}-${currentLesson.themeId}-${currentLesson.lessonId}`}
-                    title="Практика в Python"
-                    initialCode=""
+          <div className={styles.lessonMeta}>
+            <span className={styles.lessonBadge}>
+              Формат: {activeLesson.task_type === "lecture" ? "Теория" : "Проверка ответа"}
+            </span>
+            <span className={styles.lessonBadge}>Награда: {activeLesson.xp_reward} XP</span>
+            {currentLessonRef.isFinal && (
+              <span className={styles.lessonBadge}>Итоговый тест</span>
+            )}
+            {isCompleted && <span className={styles.lessonBadgeDone}>Урок уже пройден</span>}
+          </div>
+
+          <div className={styles.practiceStack}>
+            {activeLesson.task_type !== "lecture" ? (
+              <section className={styles.quizBlock}>
+                <h2 className={styles.quizTitle}>
+                  {currentLessonRef.isFinal ? "Итоговое тестирование" : "Проверка урока"}
+                </h2>
+                {!isActiveUnlocked && (
+                  <p className={styles.quizSummary}>
+                    Урок заблокирован. Сначала пройди предыдущие темы.
+                  </p>
+                )}
+                <p className={styles.quizSummary}>
+                  Введи ответ в свободной форме и отправь на проверку.
+                </p>
+                <textarea
+                  className={styles.answerInput}
+                  value={answerByTaskId[activeLesson.id] ?? ""}
+                  onChange={(event) =>
+                    setAnswerByTaskId((prev) => ({
+                      ...prev,
+                      [activeLesson.id]: event.target.value,
+                    }))
+                  }
+                  placeholder="Введи ответ..."
+                  disabled={!isActiveUnlocked || isSubmitting}
+                />
+                <div className={styles.quizActions}>
+                  <Button
+                    size="m"
+                    variant="filled"
+                    color="logo"
+                    title={isSubmitting ? "Проверяем..." : "Проверить ответ"}
+                    onClick={() => void handleCheckAnswer()}
+                    disabled={!isActiveUnlocked || isSubmitting}
                   />
                 </div>
-              )}
+              </section>
+            ) : (
+              <section className={styles.quizBlock}>
+                <h2 className={styles.quizTitle}>Теоретический материал</h2>
+                <p className={styles.quizSummary}>
+                  Для лекции ответ не требуется. Нажми «Дальше», чтобы перейти к практике.
+                </p>
+              </section>
+            )}
+          </div>
 
-              {canSubmitRemoteAnswer && (
-                <section className={styles.quizBlock}>
-                  <h2 className={styles.quizTitle}>Ответ на задание</h2>
-                  <textarea
-                    className={styles.answerInput}
-                    placeholder="Введите ответ и отправьте на проверку"
-                    value={answerBody}
-                    onChange={(event) => setAnswerBody(event.target.value)}
-                    rows={4}
-                  />
-                  <div className={styles.quizActions}>
-                    <Button
-                      size="m"
-                      variant="filled"
-                      color="logo"
-                      title={isAnswerSubmitting ? "Проверяем..." : "Отправить ответ"}
-                      onClick={handleSubmitAnswer}
-                      disabled={isAnswerSubmitting}
-                    />
-                  </div>
-                  {answerMessage && (
-                    <p className={styles.answerStatusText}>{answerMessage}</p>
-                  )}
-                </section>
-              )}
-            </div>
-          )}
-
-          {currentGame && (
-            <section className={styles.gameBlock}>
-              {currentGame.gameType === "memoryMatch" && currentGame.memoryPairs && (
-                <MemoryMatchGame pairs={currentGame.memoryPairs} />
-              )}
-
-              {currentGame.gameType === "guessCode" && currentGame.guessCodeQuestions && (
-                <GuessCodeGame questions={currentGame.guessCodeQuestions} />
-              )}
-
-              {currentGame.gameType === "fixCode" && currentGame.fixCodeTasks && (
-                <FixCodeGame tasks={currentGame.fixCodeTasks} />
-              )}
-            </section>
-          )}
+          {message && <p className={`${styles.statusMessage} ${messageClass}`.trim()}>{message}</p>}
 
           <div className={styles.nextButton}>
             <Button
@@ -525,7 +504,7 @@ function CourseTheoryPageContent() {
               variant="filled"
               color="logo"
               fullWidth
-              title={isLastStep ? "В каталог" : "Дальше"}
+              title={currentIndex >= lessons.length - 1 ? "В каталог" : "Дальше"}
               onClick={handleNext}
             />
           </div>

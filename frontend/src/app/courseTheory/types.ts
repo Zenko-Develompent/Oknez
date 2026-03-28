@@ -109,3 +109,79 @@ export interface CourseTheoryPayloadDTO {
   modules: CourseModuleDTO[];
   flow: CourseItemDTO[];
 }
+
+export type LessonFormat = "compiler" | "game" | "single_choice" | "final_test";
+export type LessonGameType = "memoryMatch" | "guessCode" | "fixCode";
+
+export interface LessonCheckOptionDTO {
+  id: string;
+  label: string;
+  description?: string;
+  isCorrect: boolean;
+}
+
+export interface LessonCheckQuestionDTO {
+  id: string;
+  prompt: string;
+  options: LessonCheckOptionDTO[];
+  explanation?: string;
+}
+
+export interface CourseLessonProgramDTO {
+  lessonId: string;
+  title: string;
+  format: LessonFormat;
+  theory: string;
+  coinReward: number;
+  compilerInitialCode?: string;
+  gameType?: LessonGameType;
+  memoryPairs?: MemoryMatchPairDTO[];
+  guessCodeQuestions?: GuessCodeQuestionDTO[];
+  fixCodeTasks?: FixCodeTaskDTO[];
+  checkQuestion?: LessonCheckQuestionDTO;
+  finalQuestions?: LessonCheckQuestionDTO[];
+  passScore?: number;
+}
+
+export interface CourseThemeProgramDTO {
+  themeId: string;
+  title: string;
+  summary: string;
+  lessons: CourseLessonProgramDTO[];
+}
+
+export interface CourseModuleProgramDTO {
+  moduleId: string;
+  title: string;
+  description: string;
+  themes: CourseThemeProgramDTO[];
+}
+
+export interface LocalAchievementRuleDTO {
+  type: "completed_lessons" | "coins" | "lesson_completed";
+  value: number | string;
+}
+
+export interface LocalAchievementDTO {
+  id: string;
+  title: string;
+  description: string;
+  badgeValue: number;
+  rule: LocalAchievementRuleDTO;
+}
+
+export interface LocalCourseProgramDTO {
+  courseId: number;
+  courseTitle: string;
+  audience: string;
+  courseDescription: string;
+  outcomes: string[];
+  modules: CourseModuleProgramDTO[];
+  achievements: LocalAchievementDTO[];
+}
+
+export interface LocalCourseProgressDTO {
+  completedLessonIds: string[];
+  coins: number;
+  unlockedAchievementIds: string[];
+}

@@ -134,6 +134,47 @@
   color: #221a2b;
 }
 
+.programGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.programCard {
+  border: 1px solid #2e2e2e;
+  border-radius: 14px;
+  padding: 14px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.programCardTitle {
+  margin: 0;
+  color: #1c1523;
+  font-size: clamp(18px, 1.9vw, 24px);
+  font-weight: 700;
+}
+
+.programCardDescription {
+  margin: 0;
+  color: #30283a;
+  font-size: clamp(14px, 1.4vw, 18px);
+  line-height: 1.35;
+}
+
+.programThemeList {
+  margin: 0;
+  padding-left: 18px;
+  color: #221a2b;
+  font-size: clamp(14px, 1.35vw, 18px);
+  line-height: 1.35;
+  display: grid;
+  gap: 4px;
+}
+
 .bottomCta {
   margin-top: 18px;
 }
@@ -167,5 +208,9 @@
 
   .heroCtaWrap {
     margin-bottom: 6px;
+  }
+
+  .programGrid {
+    grid-template-columns: 1fr;
   }
 }

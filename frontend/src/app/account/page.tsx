@@ -13,12 +13,15 @@ import AchivBronze from "@/shared/assets/images/achivbronze.png";
 import AchivGold from "@/shared/assets/images/achivhold.png";
 import AchivSilver from "@/shared/assets/images/achivsilver.png";
 import {
-  ApiError,
   AchievementPublic,
+  ApiError,
+  CoursePreviewPublic,
   UserAchievementPublic,
+  UserCoursePublic,
   UserPublic,
   getAllAchievements,
   getApiErrorMessage,
+  getHomeCourses,
   getMyAchievements,
   getMyProfile,
 } from "@/shared/api/client";
@@ -38,6 +41,16 @@ function getCourseColor(category: string, index: number): "blue" | "orange" {
   return index % 2 === 0 ? "blue" : "orange";
 }
 
+function mapProfileCourse(course: UserCoursePublic): CoursePreviewPublic {
+  return {
+    course_id: course.course_id,
+    title: course.title,
+    description: course.description,
+    progress_percent: course.progress_percent,
+    category: course.category,
+  };
+}
+
 function getAchievementImage(iconUrl: string | null, index: number): string {
   if (iconUrl && iconUrl.trim()) {
     return iconUrl;
@@ -51,6 +64,7 @@ export default function AccountPage() {
   const [profile, setProfile] = useState<UserPublic | null>(null);
   const [myAchievements, setMyAchievements] = useState<UserAchievementPublic[]>([]);
   const [allAchievements, setAllAchievements] = useState<AchievementPublic[]>([]);
+  const [myCourses, setMyCourses] = useState<CoursePreviewPublic[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -67,8 +81,18 @@ export default function AccountPage() {
     const loadData = async () => {
       try {
         setIsLoading(true);
-        const [profileResponse, myAchievementsResponse, allAchievementsResponse] =
-          await Promise.all([getMyProfile(), getMyAchievements(), getAllAchievements()]);
+        const [
+          profileResponse,
+          homeCoursesResponse,
+          myAchievementsResponse,
+          allAchievementsResponse,
+        ] =
+          await Promise.all([
+            getMyProfile(),
+            getHomeCourses(),
+            getMyAchievements(),
+            getAllAchievements(),
+          ]);
 
         if (cancelled) {
           return;
@@ -77,6 +101,19 @@ export default function AccountPage() {
         setProfile(profileResponse);
         setMyAchievements(myAchievementsResponse);
         setAllAchievements(allAchievementsResponse);
+
+        const myCoursesFromHome = homeCoursesResponse.my_courses ?? [];
+        const myCoursesFromProfile = Array.isArray(profileResponse.courses)
+          ? profileResponse.courses.map(mapProfileCourse)
+          : [];
+
+        const mergedById = new Map<number, CoursePreviewPublic>();
+
+        for (const course of [...myCoursesFromProfile, ...myCoursesFromHome]) {
+          mergedById.set(course.course_id, course);
+        }
+
+        setMyCourses(Array.from(mergedById.values()));
       } catch (error) {
         if (cancelled) {
           return;
@@ -111,7 +148,6 @@ export default function AccountPage() {
   const currentLevelXp = totalXp % XP_PER_LEVEL;
   const levelProgress = Math.round((currentLevelXp / XP_PER_LEVEL) * 100);
   const xpToNextLevel = XP_PER_LEVEL - currentLevelXp || XP_PER_LEVEL;
-
   const ownedAchievementIds = useMemo(() => {
     const ids = new Set<number>();
 
@@ -155,17 +191,18 @@ export default function AccountPage() {
         {isLoading && <p className={styles.statusText}>Загружаем данные кабинета...</p>}
         {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
 
-        <section className={styles.section} id="allCourses">
-          <h2 className={styles.sectionTitle}>Мои достижения</h2>
+        <section className={styles.section}>
+          <h2 className={styles.allAchievementsTitle}>Все достижения</h2>
 
-          <div className={styles.achievementsGrid}>
-            {myAchievements.map((achievement, index) => (
+          <div className={styles.allAchievementsGrid}>
+            {allAchievements.map((achievement, index) => (
               <AchievementCard
-                key={achievement.id}
+                key={`all-${achievement.id}`}
                 title={achievement.title}
                 image={getAchievementImage(achievement.icon_url, index)}
                 alt={achievement.title}
                 level={achievement.xp_reward}
+                className={ownedAchievementIds.has(achievement.id) ? "" : styles.grayscaleAchievement}
               />
             ))}
           </div>
@@ -175,7 +212,7 @@ export default function AccountPage() {
           <h2 className={styles.sectionTitle}>Продолжить обучение</h2>
 
           <div className={styles.coursesGrid}>
-            {(profile?.courses ?? []).map((course, index) => (
+            {myCourses.map((course, index) => (
               <Card
                 key={course.course_id}
                 category={course.category?.title ?? "Без категории"}
@@ -189,27 +226,9 @@ export default function AccountPage() {
               />
             ))}
           </div>
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.allAchievementsTitle}>Все достижения</h2>
-
-          <div className={styles.allAchievementsGrid}>
-            {allAchievements.map((achievement, index) => (
-              <AchievementCard
-                key={`all-${achievement.id}`}
-                title={achievement.title}
-                image={getAchievementImage(achievement.icon_url, index)}
-                alt={achievement.title}
-                level={achievement.xp_reward}
-                className={
-                  ownedAchievementIds.has(achievement.id)
-                    ? ""
-                    : styles.grayscaleAchievement
-                }
-              />
-            ))}
-          </div>
+          {myCourses.length === 0 && (
+            <p className={styles.statusText}>Пока нет начатых курсов. Выбери курс в каталоге.</p>
+          )}
         </section>
 
         <div className={styles.bottomActions}>
