@@ -11,6 +11,7 @@ import {
   CourseTreePublic,
   TaskAnswerResponse,
   TaskTreePublic,
+  completeTaskActivity,
   getApiErrorMessage,
   getCourseTree,
   submitTaskAnswer,
@@ -163,6 +164,36 @@ function flattenLessons(program: CourseTreePublic): FlatLessonRef[] {
   return flat;
 }
 
+function deriveViewedLectureIds(
+  program: CourseTreePublic,
+  completedTaskIds: number[],
+  viewedLectureIds: number[]
+): number[] {
+  const completedSet = new Set(completedTaskIds);
+  const viewedSet = new Set(viewedLectureIds);
+
+  for (const module of program.modules) {
+    for (const topic of module.topics) {
+      const orderedLessons = orderThemeLessons(topic.tasks);
+      const hasSolvedNonLecture = orderedLessons.some(
+        (lesson) => lesson.task_type !== "lecture" && completedSet.has(lesson.id)
+      );
+
+      if (!hasSolvedNonLecture) {
+        continue;
+      }
+
+      for (const lesson of orderedLessons) {
+        if (lesson.task_type === "lecture") {
+          viewedSet.add(lesson.id);
+        }
+      }
+    }
+  }
+
+  return Array.from(viewedSet);
+}
+
 function CourseTheoryPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -221,10 +252,17 @@ function CourseTheoryPageContent() {
           return;
         }
 
+        const completedTaskIds = response.completed_task_ids ?? [];
+        const restoredViewedLectureIds = deriveViewedLectureIds(
+          response,
+          completedTaskIds,
+          response.viewed_lecture_ids ?? []
+        );
+
         setCourseTree(response);
         setProgressPercent(response.progress_percent ?? 0);
-        setSessionCompletedIds([]);
-        setViewedLectureIds([]);
+        setSessionCompletedIds(completedTaskIds);
+        setViewedLectureIds(restoredViewedLectureIds);
         setSelectedOptionByTaskId({});
         setTextAnswerByTaskId({});
         setCompilerOutputByTaskId({});
@@ -318,8 +356,33 @@ function CourseTheoryPageContent() {
       return;
     }
 
-    setViewedLectureIds((prev) => (prev.includes(activeLesson.id) ? prev : [...prev, activeLesson.id]));
-  }, [activeLesson, isActiveUnlocked]);
+    if (viewedLectureSet.has(activeLesson.id)) {
+      return;
+    }
+
+    setViewedLectureIds((prev) => [...prev, activeLesson.id]);
+
+    let cancelled = false;
+    const persistViewedLecture = async () => {
+      try {
+        await completeTaskActivity(activeLesson.id);
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+
+        if (error instanceof ApiError && error.status === 401) {
+          router.replace("/login");
+        }
+      }
+    };
+
+    void persistViewedLecture();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeLesson, isActiveUnlocked, viewedLectureSet, router]);
 
   const activeThemeLessons = useMemo(() => {
     if (!activeThemeId) {

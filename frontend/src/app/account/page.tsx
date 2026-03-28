@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -9,8 +9,8 @@ import Header from "@/components/header/header";
 import LevelBadge from "@/components/levelBadge/levelBadge";
 import ProgressBar from "@/components/progressBar/progressBar";
 import CoinIcon from "@/shared/assets/icons/coin.svg";
-import AchivBronze from "@/shared/assets/images/achivbronze.png";
-import AchivGold from "@/shared/assets/images/achivhold.png";
+import AchivBronze from "@/shared/assets/images/achivhbronze.png";
+import AchivGold from "@/shared/assets/images/achivgold.png";
 import AchivSilver from "@/shared/assets/images/achivsilver.png";
 import {
   AchievementPublic,
@@ -116,7 +116,7 @@ export default function AccountPage() {
           return;
         }
 
-        setErrorMessage(getApiErrorMessage(error, "Не удалось загрузить данные аккаунта."));
+        setErrorMessage(getApiErrorMessage(error, "РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РґР°РЅРЅС‹Рµ Р°РєРєР°СѓРЅС‚Р°."));
       } finally {
         if (!cancelled) {
           setIsLoading(false);
@@ -133,7 +133,7 @@ export default function AccountPage() {
 
   const fullName = profile
     ? `${profile.first_name}${profile.last_name ? ` ${profile.last_name}` : ""}`
-    : "Пользователь";
+    : "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ";
   const totalXp = profile?.total_xp ?? 0;
   const level = profile?.level ?? 1;
   const currentLevelXp = totalXp % XP_PER_LEVEL;
@@ -155,7 +155,7 @@ export default function AccountPage() {
 
       <main className={styles.content}>
         <section className={styles.profileSection}>
-          <h1 className={styles.pageTitle}>Личный кабинет</h1>
+          <h1 className={styles.pageTitle}>Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚</h1>
 
           <div className={styles.profileTopRow}>
             <p className={styles.fullName}>{fullName}</p>
@@ -163,7 +163,7 @@ export default function AccountPage() {
           </div>
 
           <div className={styles.balanceRow}>
-            <p className={styles.balanceLabel}>Баланс:</p>
+            <p className={styles.balanceLabel}>Р‘Р°Р»Р°РЅСЃ:</p>
             <p className={styles.coinsRow}>
               <span className={styles.coinsAmount}>{totalXp}</span>
               <img className={styles.coinIcon} src={CoinIcon.src} alt="" aria-hidden="true" />
@@ -173,17 +173,17 @@ export default function AccountPage() {
           <ProgressBar
             value={levelProgress}
             color="blue"
-            label={`До уровня ${level + 1} осталось ${xpToNextLevel} XP`}
+            label={`Р”Рѕ СѓСЂРѕРІРЅСЏ ${level + 1} РѕСЃС‚Р°Р»РѕСЃСЊ ${xpToNextLevel} XP`}
             showValue={false}
             className={styles.coinsProgress}
           />
         </section>
 
-        {isLoading && <p className={styles.statusText}>Загружаем данные кабинета...</p>}
+        {isLoading && <p className={styles.statusText}>Р—Р°РіСЂСѓР¶Р°РµРј РґР°РЅРЅС‹Рµ РєР°Р±РёРЅРµС‚Р°...</p>}
         {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
 
         <section className={styles.section}>
-          <h2 className={styles.allAchievementsTitle}>Все достижения</h2>
+          <h2 className={styles.allAchievementsTitle}>Р’СЃРµ РґРѕСЃС‚РёР¶РµРЅРёСЏ</h2>
 
           <div className={styles.allAchievementsGrid}>
             {allAchievements.map((achievement, index) => (
@@ -200,31 +200,31 @@ export default function AccountPage() {
         </section>
 
         <section className={styles.section} id="myCourses">
-          <h2 className={styles.sectionTitle}>Продолжить обучение</h2>
+          <h2 className={styles.sectionTitle}>РџСЂРѕРґРѕР»Р¶РёС‚СЊ РѕР±СѓС‡РµРЅРёРµ</h2>
 
           <div className={styles.coursesGrid}>
             {myCourses.map((course) => (
               <Card
                 key={course.course_id}
-                category={course.category?.title ?? "Без категории"}
+                category={course.category?.title ?? "Р‘РµР· РєР°С‚РµРіРѕСЂРёРё"}
                 title={course.title}
-                description={`Прогресс: ${Math.round(course.progress_percent)}%`}
+                description={`РџСЂРѕРіСЂРµСЃСЃ: ${Math.round(course.progress_percent)}%`}
                 color={getCourseColorByCategory(course.category?.title ?? "")}
                 progress={course.progress_percent}
-                progressLabel="Прогресс курса"
+                progressLabel="РџСЂРѕРіСЂРµСЃСЃ РєСѓСЂСЃР°"
                 buttonHref={`/courses/${course.course_id}`}
-                buttonTitle="Открыть курс"
+                buttonTitle="РћС‚РєСЂС‹С‚СЊ РєСѓСЂСЃ"
               />
             ))}
           </div>
           {myCourses.length === 0 && (
-            <p className={styles.statusText}>Пока нет начатых курсов. Выбери курс в каталоге.</p>
+            <p className={styles.statusText}>РџРѕРєР° РЅРµС‚ РЅР°С‡Р°С‚С‹С… РєСѓСЂСЃРѕРІ. Р’С‹Р±РµСЂРё РєСѓСЂСЃ РІ РєР°С‚Р°Р»РѕРіРµ.</p>
           )}
         </section>
 
         <div className={styles.bottomActions}>
           <Button
-            title="Выйти из аккаунта"
+            title="Р’С‹Р№С‚Рё РёР· Р°РєРєР°СѓРЅС‚Р°"
             size="m"
             variant="outline"
             color="logo"
@@ -239,3 +239,4 @@ export default function AccountPage() {
     </div>
   );
 }
+

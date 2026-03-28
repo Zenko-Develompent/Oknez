@@ -224,13 +224,9 @@ def complete_task_activity(
             detail="Task not found",
         )
 
-    if task.task_type == TaskType.LECTURE:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Lecture task does not require completion",
-        )
+    is_lecture_task = task.task_type == TaskType.LECTURE
 
-    if task.correct_answers:
+    if not is_lecture_task and task.correct_answers:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Task requires answer submission",
@@ -277,12 +273,12 @@ def complete_task_activity(
     ).all()
     attempt_number = len(previous_answers) + 1
     already_solved = any(answer.is_correct for answer in previous_answers)
-    awarded_xp = task.xp_reward if not already_solved else 0
+    awarded_xp = 0 if is_lecture_task else (task.xp_reward if not already_solved else 0)
 
     answer = UserAnswer(
         task_id=task.id,
         user_id=user_id,
-        answer_body="completed",
+        answer_body="lecture_viewed" if is_lecture_task else "completed",
         is_correct=True,
         score=100,
         awarded_xp=awarded_xp,
@@ -327,7 +323,7 @@ def complete_task_activity(
         progress_percent=progress_percent,
         total_xp=user.total_xp,
         level=user.level,
-        message="Completed",
+        message="Lecture viewed" if is_lecture_task else "Completed",
         awarded_achievements=[
             AwardedAchievementPublic(
                 id=achievement.id,

@@ -194,6 +194,8 @@ export interface CourseTreePublic {
   is_published: boolean;
   progress_percent: number | null;
   category: CategoryPublic | null;
+  completed_task_ids?: number[];
+  viewed_lecture_ids?: number[];
   modules: ModuleTreePublic[];
 }
 

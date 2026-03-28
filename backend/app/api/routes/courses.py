@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import SQLModel, Session, select
+from sqlmodel import Field, SQLModel, Session, select
 
 from app.core.db import get_session
 from app.core.security import get_current_user_id
@@ -12,6 +12,7 @@ from app.models.models import (
     TaskType,
     Topic,
     User,
+    UserAnswer,
     UserCourse,
     UserCourseStatus,
 )
@@ -87,6 +88,8 @@ class CourseTreePublic(SQLModel):
     is_published: bool
     progress_percent: float | None = None
     category: CategoryPublic | None = None
+    completed_task_ids: list[int] = Field(default_factory=list)
+    viewed_lecture_ids: list[int] = Field(default_factory=list)
     modules: list[ModuleTreePublic]
 
 
@@ -322,6 +325,7 @@ def get_course_tree(
     ).all()
 
     modules_result = []
+    task_meta: dict[int, tuple[TaskType, int]] = {}
     for module in modules:
         topics = session.exec(
             select(Topic)
@@ -339,6 +343,9 @@ def get_course_tree(
                 )
                 .order_by(Task.order_index, Task.id)
             ).all()
+
+            for task in tasks:
+                task_meta[task.id] = (task.task_type, topic.id)
 
             topics_result.append(
                 TopicTreePublic(
@@ -375,6 +382,47 @@ def get_course_tree(
             )
         )
 
+    completed_task_ids: list[int] = []
+    viewed_lecture_ids: list[int] = []
+
+    if task_meta:
+        solved_task_ids = set(
+            session.exec(
+                select(UserAnswer.task_id).where(
+                    UserAnswer.user_id == user_id,
+                    UserAnswer.task_id.in_(list(task_meta.keys())),
+                    UserAnswer.is_correct.is_(True),
+                )
+            ).all()
+        )
+
+        solved_topic_ids = {
+            task_meta[task_id][1]
+            for task_id in solved_task_ids
+            if task_meta[task_id][0] != TaskType.LECTURE
+        }
+
+        completed_task_ids = sorted(
+            task_id
+            for task_id in solved_task_ids
+            if task_meta[task_id][0] != TaskType.LECTURE
+        )
+
+        explicit_viewed_lecture_ids = {
+            task_id
+            for task_id in solved_task_ids
+            if task_meta[task_id][0] == TaskType.LECTURE
+        }
+        inferred_viewed_lecture_ids = {
+            task_id
+            for task_id, (task_type, topic_id) in task_meta.items()
+            if task_type == TaskType.LECTURE and topic_id in solved_topic_ids
+        }
+
+        viewed_lecture_ids = sorted(
+            explicit_viewed_lecture_ids | inferred_viewed_lecture_ids
+        )
+
     return CourseTreePublic(
         id=course.id,
         title=course.title,
@@ -387,5 +435,7 @@ def get_course_tree(
         )
         if course.category
         else None,
+        completed_task_ids=completed_task_ids,
+        viewed_lecture_ids=viewed_lecture_ids,
         modules=modules_result,
     )
