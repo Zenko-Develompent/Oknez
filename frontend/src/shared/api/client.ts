@@ -5,8 +5,28 @@ import {
   setTokens,
 } from "@/shared/auth/tokens";
 
-const DEFAULT_API_BASE_URL = "http://localhost:8000";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? DEFAULT_API_BASE_URL;
+
+const getBaseUrl = () => {
+  // 1. Проверяем, задана ли переменная окружения (для гибкости)
+  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL;
+  }
+
+  // 2. Если мы в браузере, берем IP из адресной строки
+  if (typeof window !== "undefined") {
+    return `http://${window.location.hostname}:8000`;
+  }
+
+  // 3. Дефолт для локальной разработки или серверного рендеринга
+  return "http://localhost:8000";
+};
+
+const API_BASE_URL = getBaseUrl();
+
+
+// const DEFAULT_API_BASE_URL = "http://localhost:8000";
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? DEFAULT_API_BASE_URL;
+
 type RequestOptions = Omit<RequestInit, "headers"> & {
   headers?: HeadersInit;
   auth?: boolean;
