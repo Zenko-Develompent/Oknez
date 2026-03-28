@@ -36,6 +36,7 @@ class User(SQLModel, table=True):
     user_courses: list["UserCourse"] = Relationship(back_populates="user")
     user_answers: list["UserAnswer"] = Relationship(back_populates="user")
     achievement_links: list["AchievementUser"] = Relationship(back_populates="user")
+    course_comments: list["CourseComment"] = Relationship(back_populates="user")
     task_comments: list["TaskComment"] = Relationship(back_populates="user")
 
     created_at: datetime = Field(default_factory=utc_now, nullable=False)
@@ -135,6 +136,7 @@ class Course(SQLModel, table=True):
     user_courses: list["UserCourse"] = Relationship(back_populates="course")
     category: Optional["CourseCategory"] = Relationship(back_populates="courses")
     modules: list["Module"] = Relationship(back_populates="course")
+    comments: list["CourseComment"] = Relationship(back_populates="course")
 
 
 class Module(SQLModel, table=True):
@@ -216,6 +218,26 @@ class Achievement(SQLModel, table=True):
     user_links: list["AchievementUser"] = Relationship(back_populates="achievement")
 
 
+class CourseComment(SQLModel, table=True):
+    __tablename__ = "course_comments"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    course_id: int = Field(foreign_key="courses.id", index=True)
+    user_id: int = Field(foreign_key="users.id", index=True)
+
+    rating: int = Field(ge=1, le=5)
+    body: Optional[str] = Field(default=None, max_length=2000)
+
+    is_edited: bool = Field(default=False)
+    is_deleted: bool = Field(default=False)
+
+    created_at: datetime = Field(default_factory=utc_now, nullable=False)
+    updated_at: datetime = Field(default_factory=utc_now, nullable=False)
+
+    course: "Course" = Relationship(back_populates="comments")
+    user: "User" = Relationship(back_populates="course_comments")
+
+
 class TaskComment(SQLModel, table=True):
     __tablename__ = "task_comments"
 
@@ -237,3 +259,4 @@ class TaskComment(SQLModel, table=True):
 
     task: "Task" = Relationship(back_populates="comments")
     user: "User" = Relationship(back_populates="task_comments")
+
